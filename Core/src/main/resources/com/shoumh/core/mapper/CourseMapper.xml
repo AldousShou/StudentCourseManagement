@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoumh.core.mapper.CourseMapper">
+
+    <resultMap id="BaseResultMap" type="com.shoumh.core.pojo.Course">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="INTEGER"/>
+            <result property="teacherId" column="teacher_id" jdbcType="VARCHAR"/>
+            <result property="credit" column="credit" jdbcType="DECIMAL"/>
+            <result property="location" column="location" jdbcType="VARCHAR"/>
+            <result property="hasPredecessor" column="has_predecessor" jdbcType="TINYINT"/>
+            <result property="hasMajorDemand" column="has_major_demand" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,teacher_id,
+        credit,location,has_predecessor,
+        has_major_demand
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from course
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteById">
+        delete from course
+        where  id = #{id,jdbcType=VARCHAR} 
+    </delete>
+
+    <insert id="insert" parameterType="com.shoumh.core.pojo.Course">
+        insert into course
+        ( id,name,teacher_id
+        ,credit,location,has_predecessor
+        ,has_major_demand)
+        values (#{id,jdbcType=VARCHAR},#{name,jdbcType=INTEGER},#{teacherId,jdbcType=VARCHAR}
+        ,#{credit,jdbcType=DECIMAL},#{location,jdbcType=VARCHAR},#{hasPredecessor,jdbcType=TINYINT}
+        ,#{hasMajorDemand,jdbcType=TINYINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.shoumh.core.pojo.Course">
+        insert into course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="name != null">name,</if>
+                <if test="teacherId != null">teacher_id,</if>
+                <if test="credit != null">credit,</if>
+                <if test="location != null">location,</if>
+                <if test="hasPredecessor != null">has_predecessor,</if>
+                <if test="hasMajorDemand != null">has_major_demand,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=VARCHAR},</if>
+                <if test="name != null">#{name,jdbcType=INTEGER},</if>
+                <if test="teacherId != null">#{teacherId,jdbcType=VARCHAR},</if>
+                <if test="credit != null">#{credit,jdbcType=DECIMAL},</if>
+                <if test="location != null">#{location,jdbcType=VARCHAR},</if>
+                <if test="hasPredecessor != null">#{hasPredecessor,jdbcType=TINYINT},</if>
+                <if test="hasMajorDemand != null">#{hasMajorDemand,jdbcType=TINYINT},</if>
+        </trim>
+    </insert>
+
+    <update id="updateByIdSelective" parameterType="com.shoumh.core.pojo.Course">
+        update course
+        <set>
+                <if test="name != null">
+                    name = #{name,jdbcType=INTEGER},
+                </if>
+                <if test="teacherId != null">
+                    teacher_id = #{teacherId,jdbcType=VARCHAR},
+                </if>
+                <if test="credit != null">
+                    credit = #{credit,jdbcType=DECIMAL},
+                </if>
+                <if test="location != null">
+                    location = #{location,jdbcType=VARCHAR},
+                </if>
+                <if test="hasPredecessor != null">
+                    has_predecessor = #{hasPredecessor,jdbcType=TINYINT},
+                </if>
+                <if test="hasMajorDemand != null">
+                    has_major_demand = #{hasMajorDemand,jdbcType=TINYINT},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=VARCHAR} 
+    </update>
+
+    <update id="updateById" parameterType="com.shoumh.core.pojo.Course">
+        update course
+        set 
+            name =  #{name,jdbcType=INTEGER},
+            teacher_id =  #{teacherId,jdbcType=VARCHAR},
+            credit =  #{credit,jdbcType=DECIMAL},
+            location =  #{location,jdbcType=VARCHAR},
+            has_predecessor =  #{hasPredecessor,jdbcType=TINYINT},
+            has_major_demand =  #{hasMajorDemand,jdbcType=TINYINT}
+        where   id = #{id,jdbcType=VARCHAR} 
+    </update>
+</mapper>

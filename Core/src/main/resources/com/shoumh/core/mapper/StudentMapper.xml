@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoumh.core.mapper.StudentMapper">
+
+    <resultMap id="BaseResultMap" type="com.shoumh.core.pojo.Student">
+            <result property="stuId" column="stu_id" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="gender" column="gender" jdbcType="VARCHAR"/>
+            <result property="entryDt" column="entry_dt" jdbcType="DATE"/>
+            <result property="graduateDt" column="graduate_dt" jdbcType="DATE"/>
+            <result property="college" column="college" jdbcType="INTEGER"/>
+            <result property="major" column="major" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        stu_id,name,gender,
+        entry_dt,graduate_dt,college,
+        major
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from student
+        where stu_id = #{stuId}
+    </select>
+
+    <delete id="deleteById">
+        delete from student
+        where stu_id = #{stuId}
+    </delete>
+
+    <insert id="insert">
+        insert into student
+        ( stu_id,name,gender
+        ,entry_dt,graduate_dt,college
+        ,major)
+        values (#{stuId,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{gender,jdbcType=VARCHAR}
+        ,#{entryDt,jdbcType=DATE},#{graduateDt,jdbcType=DATE},#{college,jdbcType=INTEGER}
+        ,#{major,jdbcType=INTEGER})
+    </insert>
+
+    <insert id="insertSelective">
+        insert into student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="stuId != null">stu_id,</if>
+                <if test="name != null">name,</if>
+                <if test="gender != null">gender,</if>
+                <if test="entryDt != null">entry_dt,</if>
+                <if test="graduateDt != null">graduate_dt,</if>
+                <if test="college != null">college,</if>
+                <if test="major != null">major,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="stuId != null">#{stuId,jdbcType=VARCHAR},</if>
+                <if test="name != null">#{name,jdbcType=VARCHAR},</if>
+                <if test="gender != null">#{gender,jdbcType=VARCHAR},</if>
+                <if test="entryDt != null">#{entryDt,jdbcType=DATE},</if>
+                <if test="graduateDt != null">#{graduateDt,jdbcType=DATE},</if>
+                <if test="college != null">#{college,jdbcType=INTEGER},</if>
+                <if test="major != null">#{major,jdbcType=INTEGER},</if>
+        </trim>
+    </insert>
+
+    <update id="updateByIdSelective" parameterType="com.shoumh.core.pojo.Student">
+        update student
+        <set>
+                <if test="name != null">
+                    name = #{name,jdbcType=VARCHAR},
+                </if>
+                <if test="gender != null">
+                    gender = #{gender,jdbcType=VARCHAR},
+                </if>
+                <if test="entryDt != null">
+                    entry_dt = #{entryDt,jdbcType=DATE},
+                </if>
+                <if test="graduateDt != null">
+                    graduate_dt = #{graduateDt,jdbcType=DATE},
+                </if>
+                <if test="college != null">
+                    college = #{college,jdbcType=INTEGER},
+                </if>
+                <if test="major != null">
+                    major = #{major,jdbcType=INTEGER},
+                </if>
+        </set>
+        where stu_id = #{stuId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateById" parameterType="com.shoumh.core.pojo.Student">
+        update student
+        set
+            name =  #{name,jdbcType=VARCHAR},
+            gender =  #{gender,jdbcType=VARCHAR},
+            entry_dt =  #{entryDt,jdbcType=DATE},
+            graduate_dt =  #{graduateDt,jdbcType=DATE},
+            college =  #{college,jdbcType=INTEGER},
+            major =  #{major,jdbcType=INTEGER}
+        where
+            stu_id =  #{stuId,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoumh.core.mapper.StudentCourseAllMapper">
+
+    <resultMap id="BaseResultMap" type="com.shoumh.core.pojo.StudentCourseAll">
+            <result property="stuId" column="stu_id" jdbcType="VARCHAR"/>
+            <result property="courseId" column="course_id" jdbcType="VARCHAR"/>
+            <result property="selectDt" column="select_dt" jdbcType="DATE"/>
+            <result property="stuName" column="stu_name" jdbcType="VARCHAR"/>
+            <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+            <result property="teacherId" column="teacher_id" jdbcType="VARCHAR"/>
+            <result property="credit" column="credit" jdbcType="DECIMAL"/>
+            <result property="location" column="location" jdbcType="VARCHAR"/>
+            <result property="hasPredecessor" column="has_predecessor" jdbcType="TINYINT"/>
+            <result property="hasMajorDemand" column="has_major_demand" jdbcType="TINYINT"/>
+            <result property="year" column="year" jdbcType="INTEGER"/>
+            <result property="semester" column="semester" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        record_id, stu_id,course_id,select_dt,
+        stu_name,course_name,teacher_id,
+        credit,location,has_predecessor,
+        has_major_demand,year,semester
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from student_course_all_view
+        where record_id = #{id}
+    </select>
+
+    <select id="select" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from student_course_all_view
+        <where>
+            <if test="student != null">
+                <if test="student.stuId != null">
+                    and stu_id = #{student.stuId}
+                </if>
+            </if>
+
+            <if test="year != null">
+                and year = #{year}
+            </if>
+
+            <if test="semester != null">
+                and semester = #{semester}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteById">
+        delete from student_course
+        where id = #{id}
+    </delete>
+
+</mapper>

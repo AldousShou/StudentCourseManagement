@@ -14,6 +14,12 @@ public class Result {
     private String msg;
     private Object data;
 
+    public Result(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+        this.data = null;
+    }
+
     public static Result success() {
         return new Result(0, "success", null);
     }

@@ -3,6 +3,7 @@ package com.shoumh.core.pojo;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,16 +11,37 @@ import lombok.NoArgsConstructor;
 
 /**
  * 
- * @TableName course_view
+ * @TableName student_course_all_view
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Course implements Serializable {
+@AllArgsConstructor
+public class StudentCourseAll implements Serializable {
+
+    /**
+     * 记录 id
+     */
+    private String recordId;
+
+    /**
+     * 学生 id
+     */
+    private String stuId;
+
     /**
      * 课程 id
      */
     private String courseId;
+
+    /**
+     * 选课时间
+     */
+    private Date selectDt;
+
+    /**
+     * 学生姓名
+     */
+    private String stuName;
 
     /**
      * 课程名
@@ -60,11 +82,6 @@ public class Course implements Serializable {
      * 可修学期
      */
     private Integer semester;
-
-    /**
-     * 教师姓名
-     */
-    private String teacherName;
 
     @Serial
     private static final long serialVersionUID = 1L;

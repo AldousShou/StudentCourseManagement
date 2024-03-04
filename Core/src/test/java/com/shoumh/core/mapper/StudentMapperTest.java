@@ -21,10 +21,12 @@ class StudentMapperTest {
         log.debug("student mapper test start ----");
 
         log.debug("- select by id");
-        record = studentMapper.selectById("123123");
+        record = studentMapper.selectById("123456");
+        log.debug(record.toString());
 
         log.debug("- delete by id");
         studentMapper.deleteById("123123");
+        studentMapper.deleteById("123124");
 
         log.debug("- insert");
         record = new Student("123123", "new stu", "male", null, null, null, null);

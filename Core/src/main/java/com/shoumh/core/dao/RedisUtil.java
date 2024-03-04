@@ -5,6 +5,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 
 
@@ -18,9 +20,19 @@ public class RedisUtil {
         this.redisTemplate = redisTemplate;
     }
 
-    // 设置键值对
-    public void set(String key, String value) {
-        redisTemplate.opsForValue().set(key, value);
+    public String concatKeys(String... keys) {
+        if (keys == null) {
+            throw new IllegalArgumentException("Keys array cannot be null");
+        }
+
+        StringJoiner stringJoiner = new StringJoiner(":");
+        for (String key : keys) {
+            if (key == null) {
+                throw new IllegalArgumentException("Key cannot be null");
+            }
+            stringJoiner.add(key);
+        }
+        return stringJoiner.toString();
     }
 
     // 设置键值对，并指定过期时间
@@ -41,5 +53,15 @@ public class RedisUtil {
     // 检查指定键是否存在
     public boolean hasKey(String key) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    // 设置键值对
+    public void set(String key, String value) {
+        redisTemplate.opsForValue().set(key, value);
+    }
+
+    // decr num
+    public Long decr(String key) {
+        return redisTemplate.opsForValue().decrement(key);
     }
 }

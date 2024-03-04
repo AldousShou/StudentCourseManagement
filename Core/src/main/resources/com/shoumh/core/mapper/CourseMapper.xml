@@ -5,70 +5,195 @@
 <mapper namespace="com.shoumh.core.mapper.CourseMapper">
 
     <resultMap id="BaseResultMap" type="com.shoumh.core.pojo.Course">
-            <id property="id" column="id" jdbcType="VARCHAR"/>
-            <result property="name" column="name" jdbcType="INTEGER"/>
+            <result property="courseId" column="course_id" jdbcType="VARCHAR"/>
+            <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
             <result property="teacherId" column="teacher_id" jdbcType="VARCHAR"/>
             <result property="credit" column="credit" jdbcType="DECIMAL"/>
             <result property="location" column="location" jdbcType="VARCHAR"/>
             <result property="hasPredecessor" column="has_predecessor" jdbcType="TINYINT"/>
             <result property="hasMajorDemand" column="has_major_demand" jdbcType="TINYINT"/>
+            <result property="year" column="year" jdbcType="INTEGER"/>
+            <result property="semester" column="semester" jdbcType="INTEGER"/>
+            <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,teacher_id,
+        course_id,course_name,teacher_id,
         credit,location,has_predecessor,
-        has_major_demand
+        has_major_demand,year,semester,
+        teacher_name
     </sql>
+
+    <delete id="deleteById">
+        delete from course
+        where id = #{id}
+    </delete>
 
     <select id="selectById" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from course
-        where id = #{id,jdbcType=VARCHAR}
+        from course_view
+        where course_id = #{id}
     </select>
 
-    <delete id="deleteById">
-        delete from course
-        where  id = #{id,jdbcType=VARCHAR} 
-    </delete>
+    <select id="selectByYearAndSemester" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from course_view
+        <where>
+            <if test="year != null"> and year = #{year}</if>
+            <if test="semester != null"> and semester = #{semester}</if>
+        </where>
+        <if test="pagesize != null">
+            limit #{pagesize}
+        </if>
+        offset #{start}
+    </select>
 
-    <insert id="insert" parameterType="com.shoumh.core.pojo.Course">
+    <select id="selectSelective" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List"/>
+        from course_view
+        <where>
+            <if test="courseId != null">and course_id = #{courseId,jdbcType=VARCHAR},</if>
+            <if test="courseName != null">and course_name = #{courseName,jdbcType=VARCHAR},</if>
+            <if test="teacherId != null">and teacher_id = #{teacherId,jdbcType=VARCHAR},</if>
+            <if test="credit != null">and credit = #{credit,jdbcType=DECIMAL},</if>
+            <if test="location != null">and location = #{location,jdbcType=VARCHAR},</if>
+            <if test="hasPredecessor != null">and has_predecessor = #{hasPredecessor,jdbcType=TINYINT},</if>
+            <if test="hasMajorDemand != null">and has_major_demand = #{hasMajorDemand,jdbcType=TINYINT},</if>
+            <if test="year != null">year = #{year,jdbcType=INTEGER},</if>
+            <if test="semester != null">semester = #{semester,jdbcType=INTEGER},</if>
+        </where>
+    </select>
+
+    <select id="selectSelectiveByMajor" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List"/>
+        from course_view a left join course_major b on a.course_id = b.id
+        <where>
+            b.major = #{major}
+            <if test="course != null">
+                <if test="course.courseId != null">and course_id = #{course.courseId,jdbcType=VARCHAR}</if>
+                <if test="course.courseName != null">and course_name = #{course.courseName,jdbcType=VARCHAR}</if>
+                <if test="course.teacherId != null">and teacher_id = #{course.teacherId,jdbcType=VARCHAR}</if>
+                <if test="course.credit != null">and credit = #{course.credit,jdbcType=DECIMAL}</if>
+                <if test="course.location != null">and location = #{course.location,jdbcType=VARCHAR}</if>
+                <if test="course.hasPredecessor != null">and has_predecessor = #{course.hasPredecessor,jdbcType=TINYINT}</if>
+                <if test="course.hasMajorDemand != null">and has_major_demand = #{course.hasMajorDemand,jdbcType=TINYINT}</if>
+                <if test="course.year != null">and year = #{course.year,jdbcType=INTEGER}</if>
+                <if test="course.semester != null">and semester = #{course.semester,jdbcType=INTEGER}</if>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectMajorAllByYearSemesterAndStudent" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List"/>
+        from student a inner join course_view b on b.has_major_demand = 1 and a.stu_id = #{student.stuId}
+        inner join course_major c on a.major = c.major
+        <where>
+            <if test="year != null">and year = #{year}</if>
+        <if test="semester != null">and semester = #{semester}</if>
+        </where>
+    </select>
+
+    <select id="selectMajorEndedByStudent" resultMap="BaseResultMap">
+#         select
+#             id, stu_id, select_dt, status,
+#             b.course_id, course_name, teacher_id, credit, location, has_predecessor, has_major_demand, year, semester, teacher_name
+#         from student_course a inner join course_view b on a.course_id = b.course_id
+#         where a.status = 'ended' and a.stu_id = #{stuId};
+
+        select a.id as course_id, a.major as major,
+               b.stu_id as stu_id, b.name as course_name, gender, entry_dt, graduate_dt, college,
+               teacher_id, credit, location, has_predecessor, has_major_demand, year, semester
+        from course_major a
+        inner join student b on a.major = b.major
+        inner join course c on a.id = c.id
+        inner join student_course d on d.stu_id = b.stu_id and d.course_id = a.id and d.status = 'ended'
+        where b.stu_id = #{stuId};
+    </select>
+
+    <select id="selectAvail" resultType="long">
+        <if test="courseId != null">
+            select capacity - selection from course_capacity where course_id = #{courseId};
+        </if>
+        <if test="courseId == null">
+            select 0;
+        </if>
+    </select>
+
+    <select id="selectAllChosenByStudent" resultMap="BaseResultMap">
+        select
+            id, stu_id, select_dt, status,
+            b.course_id, course_name, teacher_id, credit, location, has_predecessor, has_major_demand, year, semester, teacher_name
+        from student_course a inner join course_view b on a.course_id = b.course_id
+        where a.status = 'normal' and a.stu_id = #{stuId};
+    </select>
+
+    <select id="selectMajorUnchosenByStudent" resultType="com.shoumh.core.pojo.Course">
+        select
+            <include refid="Base_Column_List"/>
+        from student a inner join course_view b on b.has_major_demand = 1 and a.stu_id = #{student.stuId}
+        inner join course_major c on a.major = c.major
+        where b.course_id not in (
+            select course_id from student_course aa where aa.status = 'ended' and a.stu_id = aa.stu_id
+        )
+    </select>
+
+    <insert id="insert">
         insert into course
         ( id,name,teacher_id
         ,credit,location,has_predecessor
-        ,has_major_demand)
-        values (#{id,jdbcType=VARCHAR},#{name,jdbcType=INTEGER},#{teacherId,jdbcType=VARCHAR}
+        ,has_major_demand,year,semester
+        )
+        values (#{courseId,jdbcType=VARCHAR},#{courseName,jdbcType=VARCHAR},#{teacherId,jdbcType=VARCHAR}
         ,#{credit,jdbcType=DECIMAL},#{location,jdbcType=VARCHAR},#{hasPredecessor,jdbcType=TINYINT}
-        ,#{hasMajorDemand,jdbcType=TINYINT})
+        ,#{hasMajorDemand,jdbcType=TINYINT},#{year,jdbcType=INTEGER},#{semester,jdbcType=INTEGER}
+        )
     </insert>
 
-    <insert id="insertSelective" parameterType="com.shoumh.core.pojo.Course">
+    <insert id="insertSelective">
         insert into course
         <trim prefix="(" suffix=")" suffixOverrides=",">
-                <if test="id != null">id,</if>
-                <if test="name != null">name,</if>
+                <if test="courseId != null">id,</if>
+                <if test="courseName != null">name,</if>
                 <if test="teacherId != null">teacher_id,</if>
                 <if test="credit != null">credit,</if>
                 <if test="location != null">location,</if>
                 <if test="hasPredecessor != null">has_predecessor,</if>
                 <if test="hasMajorDemand != null">has_major_demand,</if>
+                <if test="year != null">year,</if>
+                <if test="semester != null">semester,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-                <if test="id != null">#{id,jdbcType=VARCHAR},</if>
-                <if test="name != null">#{name,jdbcType=INTEGER},</if>
+                <if test="courseId != null">#{courseId,jdbcType=VARCHAR},</if>
+                <if test="courseName != null">#{courseName,jdbcType=VARCHAR},</if>
                 <if test="teacherId != null">#{teacherId,jdbcType=VARCHAR},</if>
                 <if test="credit != null">#{credit,jdbcType=DECIMAL},</if>
                 <if test="location != null">#{location,jdbcType=VARCHAR},</if>
                 <if test="hasPredecessor != null">#{hasPredecessor,jdbcType=TINYINT},</if>
                 <if test="hasMajorDemand != null">#{hasMajorDemand,jdbcType=TINYINT},</if>
+                <if test="year != null">#{year,jdbcType=INTEGER},</if>
+                <if test="semester != null">#{semester,jdbcType=INTEGER},</if>
         </trim>
+    </insert>
+    <insert id="choose">
+        START TRANSACTION ;
+
+            update course_capacity set selection = selection + 1 where course_id = #{course.courseId};
+
+            insert into student_course (stu_id, course_id, select_dt, status) values (#{stuId}, #{course.courseId}, current_date, 'normal');
+
+        COMMIT ;
     </insert>
 
     <update id="updateByIdSelective" parameterType="com.shoumh.core.pojo.Course">
         update course
         <set>
-                <if test="name != null">
-                    name = #{name,jdbcType=INTEGER},
+                <if test="courseName != null">
+                    name = #{courseName,jdbcType=VARCHAR},
                 </if>
                 <if test="teacherId != null">
                     teacher_id = #{teacherId,jdbcType=VARCHAR},
@@ -85,19 +210,27 @@
                 <if test="hasMajorDemand != null">
                     has_major_demand = #{hasMajorDemand,jdbcType=TINYINT},
                 </if>
+                <if test="year != null">
+                    year = #{year,jdbcType=INTEGER},
+                </if>
+                <if test="semester != null">
+                    semester = #{semester,jdbcType=INTEGER},
+                </if>
         </set>
-        where   id = #{id,jdbcType=VARCHAR} 
+        where id = #{courseId}
     </update>
 
     <update id="updateById" parameterType="com.shoumh.core.pojo.Course">
         update course
-        set 
-            name =  #{name,jdbcType=INTEGER},
+        set
+            name =  #{courseName,jdbcType=VARCHAR},
             teacher_id =  #{teacherId,jdbcType=VARCHAR},
             credit =  #{credit,jdbcType=DECIMAL},
             location =  #{location,jdbcType=VARCHAR},
             has_predecessor =  #{hasPredecessor,jdbcType=TINYINT},
-            has_major_demand =  #{hasMajorDemand,jdbcType=TINYINT}
-        where   id = #{id,jdbcType=VARCHAR} 
+            has_major_demand =  #{hasMajorDemand,jdbcType=TINYINT},
+            year =  #{year,jdbcType=INTEGER},
+            semester =  #{semester,jdbcType=INTEGER}
+        where id =  #{courseId,jdbcType=VARCHAR}
     </update>
 </mapper>

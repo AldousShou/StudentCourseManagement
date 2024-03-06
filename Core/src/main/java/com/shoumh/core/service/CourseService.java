@@ -1,25 +1,31 @@
 package com.shoumh.core.service;
 
+import com.shoumh.core.common.CourseStatus;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseSheet;
-import com.shoumh.core.pojo.Student;
-import com.shoumh.core.pojo.StudentCourseAll;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public interface CourseService {
-    @Deprecated
-    public List<Course> getCurrentCourse(Integer start, Integer pagesize);
-    @Deprecated
-    public List<Course> getCourse(Integer year, Integer semester, Integer start, Integer pagesize);
+    public List<Course> getCurrentPublic(Integer start, Integer pagesize);
+    public List<Course> getPublic(Integer year, Integer semester, Integer start, Integer pagesize);
 
-    public List<Course> getCurrentPublicCourse(Integer start, Integer pagesize);
-    public List<Course> getPublicCourse(Integer year, Integer semester, Integer start, Integer pagesize);
-    public List<Course> getCurrentMajorCourseAll(Student student);
-    public List<Course> getMajorCourseAll(Integer year, Integer semester, Student student);
-    public List<Course> getMajorCourseEnded(Student student);
-    public List<Course> getMajorCourseChosen(Student student);
-    public List<Course> getMajorCourseUnchosen(Student student);
+    public List<Course> getCurrentPublicChosenByStudent(@NotNull String stuId, CourseStatus status, Integer start, Integer pagesize);
+    public List<Course> getPublicChosenByStudent(@NotNull String stuId, CourseStatus status, Integer year, Integer semester, Integer start, Integer pagesize);
+
+    public List<Course> getCurrentPublicUnchosenByStudent(@NotNull String stuId, Integer start, Integer pagesize);
+    public List<Course> getPublicUnchosenByStudent(@NotNull String stuId, Integer year, Integer semester, Integer start, Integer pagesize);
+
+    public List<Course> getCurrentMajor(@NotNull Integer major, Integer start, Integer pagesize);
+    public List<Course> getMajor(@NotNull Integer major, Integer year, Integer semester, Integer start, Integer pagesize);
+
+    public List<Course> getCurrentMajorChosenByStudent(@NotNull String stuId, CourseStatus status, Integer start, Integer pagesize);
+    public List<Course> getMajorChosenByStudent(@NotNull String stuId, CourseStatus status, Integer year, Integer semester, Integer start, Integer pagesize);
+
+    public List<Course> getCurrentMajorUnchosenByStudent(@NotNull String stuId, Integer start, Integer pagesize);
+    public List<Course> getMajorUnchosenByStudent(@NotNull String stuId, Integer year, Integer semester, Integer start, Integer pagesize);
+
 
     public List<Course> chooseCourse(CourseSheet sheet);
 

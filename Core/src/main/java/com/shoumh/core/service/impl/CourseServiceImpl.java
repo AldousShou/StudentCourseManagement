@@ -2,20 +2,22 @@ package com.shoumh.core.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.shoumh.core.common.CourseStatus;
 import com.shoumh.core.common.SystemConstant;
 import com.shoumh.core.dao.CourseDao;
 import com.shoumh.core.dao.RedisUtil;
 import com.shoumh.core.pojo.Course;
+import com.shoumh.core.pojo.CourseCapacity;
 import com.shoumh.core.pojo.CourseSheet;
 import com.shoumh.core.pojo.Student;
 import com.shoumh.core.service.CourseService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Math.max;
@@ -33,78 +35,142 @@ public class CourseServiceImpl implements CourseService {
     private static final Integer SEMESTER = SystemConstant.SEMESTER;
 
     private final ReentrantLock cacheReadyLock = new ReentrantLock();
-    private final String cacheReadyString = "course:cached";
+    private final ReentrantLock pubCourseReadyLock = new ReentrantLock();
+    private final String cacheReadyKey = "course:cached";
 
     private final Gson gson = new Gson();
     private final Type LIST_COURSE = new TypeToken<List<Course>>(){}.getType();
 
-    @Deprecated
     @Override
-    public List<Course> getCurrentCourse(Integer start, Integer pagesize) {
-        return getCourse(YEAR, SEMESTER, start, pagesize);
-    }
-
-    @Deprecated
-    @Override
-    public List<Course> getCourse(Integer year, Integer semester, Integer start, Integer pagesize) {
-        return courseDao.selectByYearAndSemester(year, semester, start, pagesize);
+    public List<Course> getCurrentPublic(Integer start, Integer pagesize) {
+        return getPublic(YEAR, SEMESTER, start, pagesize);
     }
 
     @Override
-    public List<Course> getCurrentPublicCourse(Integer start, Integer pagesize) {
-        return getPublicCourse(YEAR, SEMESTER, start, pagesize);
-    }
-
-    @Override
-    public List<Course> getPublicCourse(Integer year, Integer semester, Integer start, Integer pagesize) {
-        if (start == null) start = 0;
-
+    public List<Course> getPublic(Integer year, Integer semester, Integer start, Integer pagesize) {
         String yearStr = year != null? year.toString(): "null";
         String semStr = semester != null? semester.toString(): "null";
-        String startStr = start.toString();
+        String startStr = start != null? start.toString(): "null";
         String pagesizeString = pagesize != null ? pagesize.toString(): "null";
 
-        String pubCourseKey = redisUtil.concatKeys("pub_course_key", yearStr, semStr, startStr, pagesizeString);
-        if (redisUtil.hasKey(pubCourseKey)) {
-            return gson.fromJson(redisUtil.get(pubCourseKey), LIST_COURSE);
+        // 查看是否有对应分页的内容，如果有则直接返回
+        String pageKey = redisUtil.concatKeys("pub_course_key", yearStr, semStr, "page", startStr, pagesizeString);
+        pubCourseReadyLock.lock();
+        if (redisUtil.hasKey(pageKey)) {
+            pubCourseReadyLock.unlock();
+            return gson.fromJson(redisUtil.get(pageKey), LIST_COURSE);
         } else {
-            List<Course> courses = courseDao.selectByYearAndSemester(year, semester, start, pagesize);
-            redisUtil.setWithExpiration(pubCourseKey, gson.toJson(courses), 1, TimeUnit.HOURS);
-            return courses;
+            List<Course> coursesPage = courseDao.selectByYearAndSemester(year, semester, start, pagesize);
+            // 写 全部
+            redisUtil.set(pageKey, gson.toJson(coursesPage));
+            pubCourseReadyLock.unlock();
+            return coursesPage;
         }
     }
 
     @Override
-    public List<Course> getCurrentMajorCourseAll(Student student) {
-        return getMajorCourseAll(YEAR, SEMESTER, student);
+    public List<Course> getCurrentPublicChosenByStudent(@NotNull String stuId, CourseStatus status,
+                                                        Integer start, Integer pagesize) {
+        return getPublicChosenByStudent(stuId, status, YEAR, SEMESTER, start, pagesize);
     }
 
     @Override
-    public List<Course> getMajorCourseAll(Integer year, Integer semester, Student student) {
-        return courseDao.selectAll(year, semester, student);
+    public List<Course> getPublicChosenByStudent(@NotNull String stuId, CourseStatus status,
+                                                 Integer year, Integer semester,
+                                                 Integer start, Integer pagesize) {
+        Student student = new Student();
+        student.setStuId(stuId);
+        Course course = new Course();
+        course.setYear(year);
+        course.setSemester(semester);
+        course.setHasMajorDemand(0);
+        return courseDao.selectChosen(student, course, status, start, pagesize);
     }
 
     @Override
-    public List<Course> getMajorCourseEnded(Student student) {
-        List<Course> courses = courseDao.selectEnded(student);
-        ArrayList<Course> res = new ArrayList<>();
-        for (Course course: courses) {
-            if (course.getHasMajorDemand()) {
+    public List<Course> getCurrentPublicUnchosenByStudent(@NotNull String stuId, Integer start, Integer pagesize) {
+        return getPublicUnchosenByStudent(stuId, YEAR, SEMESTER, start, pagesize);
+    }
 
-            }
+    @Override
+    public List<Course> getPublicUnchosenByStudent(@NotNull String stuId, Integer year, Integer semester, Integer start, Integer pagesize) {
+        Student student = new Student();
+        student.setStuId(stuId);
+        Course course = new Course();
+        course.setYear(year);
+        course.setSemester(semester);
+        course.setHasMajorDemand(0);
+        return courseDao.selectUnchosen(student, course, start, pagesize);
+    }
+
+    @Override
+    public List<Course> getCurrentMajor(@NotNull Integer major, Integer start, Integer pagesize) {
+        return getMajor(major, YEAR, SEMESTER, start, pagesize);
+    }
+
+    @Override
+    public List<Course> getMajor(@NotNull Integer major, Integer year, Integer semester, Integer start, Integer pagesize) {
+        String majorStr = major.toString();
+        String yearStr = year != null? year.toString(): "null";
+        String semStr = semester != null? semester.toString(): "null";
+        String startStr = start != null? start.toString(): "null";
+        String pagesizeString = pagesize != null ? pagesize.toString(): "null";
+
+        Student student = new Student();
+        student.setMajor(major);
+        Course course = new Course();
+        course.setYear(year);
+        course.setSemester(semester);
+
+        // 查看是否有对应分页的内容，如果有则直接返回
+        String pageKey = redisUtil.concatKeys("maj_course_key", yearStr, semStr, majorStr, "page", startStr, pagesizeString);
+        pubCourseReadyLock.lock();
+        if (redisUtil.hasKey(pageKey)){
+            pubCourseReadyLock.unlock();
+            return gson.fromJson(redisUtil.get(pageKey), LIST_COURSE);
+        } else {
+            List<Course> coursesPage = courseDao.select(student, course, null, start, pagesize);
+            // 写 全部
+            redisUtil.set(pageKey, gson.toJson(coursesPage));
+            pubCourseReadyLock.unlock();
+            return coursesPage;
         }
-        return
-    }  // #TODO: 此处存在问题，selectended 为所有的 course，而 service 中则是所有的专业课
-
-    @Override
-    public List<Course> getMajorCourseChosen(Student student) {
-        return courseDao.selectChosen(student);
     }
 
     @Override
-    public List<Course> getMajorCourseUnchosen(Student student) {
-        return courseDao.selectUnchosen(student);
+    public List<Course> getCurrentMajorChosenByStudent(@NotNull String stuId, CourseStatus status, Integer start, Integer pagesize) {
+        return getMajorChosenByStudent(stuId, status, YEAR, SEMESTER, start, pagesize);
     }
+
+    @Override
+    public List<Course> getMajorChosenByStudent(@NotNull String stuId, CourseStatus status,
+                                                Integer year, Integer semester,
+                                                Integer start, Integer pagesize) {
+        Student student = new Student();
+        student.setStuId(stuId);
+        Course course = new Course();
+        course.setYear(year);
+        course.setSemester(semester);
+        course.setHasMajorDemand(1);
+
+        return courseDao.selectChosen(student, course, status, start, pagesize);
+    }
+
+    @Override
+    public List<Course> getCurrentMajorUnchosenByStudent(@NotNull String stuId, Integer start, Integer pagesize) {
+        return getMajorUnchosenByStudent(stuId, YEAR, SEMESTER, start, pagesize);
+    }
+
+    @Override
+    public List<Course> getMajorUnchosenByStudent(@NotNull String stuId, Integer year, Integer semester, Integer start, Integer pagesize) {
+        Student student = new Student();
+        student.setStuId(stuId);
+        Course course = new Course();
+        course.setYear(year);
+        course.setSemester(semester);
+        return courseDao.selectUnchosen(student, course, start, pagesize);
+    }
+
 
     @Override
     public List<Course> chooseCourse(CourseSheet sheet) {
@@ -121,18 +187,18 @@ public class CourseServiceImpl implements CourseService {
             // 查看 redis 中缓存是否有效
             // WARNING: 请先使用 warm-up 将所有课程数据读入 cache
             cacheReadyLock.lock();
-            if (redisUtil.hasKey(cacheReadyString)) cacheReadyLock.unlock();
+            if (redisUtil.hasKey(cacheReadyKey)) cacheReadyLock.unlock();
             else {
-                // 获取所有的课程
-                List<Course> courses = courseDao.selectByYearAndSemester(YEAR, SEMESTER, 0, null);
+                // 获取所有的课程, 并为其创建 redis 索引
+                List<Course> courses = courseDao.selectByYearAndSemester(YEAR, SEMESTER, null, null);
                 for (Course c: courses) {
                     String redisKey = redisUtil.concatKeys("course", "count", c.getCourseId());
-                    Long avail = courseDao.getAvail(course);
-                    if (avail == null) avail = 0L;
-                    redisUtil.set(redisKey, avail.toString());
+                    CourseCapacity capacity = courseDao.getCapacity(course);
+                    long avail = capacity.getCapacity() - capacity.getSelection();
+                    redisUtil.set(redisKey, String.valueOf(avail));
                 }
                 // 设置 cacheready
-                redisUtil.set(cacheReadyString, "OK");
+                redisUtil.set(cacheReadyKey, "OK");
                 cacheReadyLock.unlock();
             }
 
@@ -142,9 +208,6 @@ public class CourseServiceImpl implements CourseService {
                 // redis 中存在 key
                 if (redisUtil.decr(courseKey) >= 0) {
                     // 成功有抢课的资格
-                    // 判断是否合法
-
-
                     courseDao.choose(stuId, course);
                 } else {
                     // 数量小于 0，未成功选到

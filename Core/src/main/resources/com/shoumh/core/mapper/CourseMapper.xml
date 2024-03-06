@@ -39,7 +39,7 @@
 
     <select id="selectCapacity" resultType="com.shoumh.core.pojo.CourseCapacity">
         <if test="courseId != null">
-            select capacity, selection from course_capacity where course_id = #{courseId};
+            select course_id, capacity, selection from course_capacity where course_id = #{courseId};
         </if>
         <if test="courseId == null">
             select 0 as capacity, 0 as selection;

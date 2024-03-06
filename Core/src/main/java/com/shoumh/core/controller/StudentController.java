@@ -97,6 +97,12 @@ public class StudentController {
         return Result.success(courseService.getCurrentMajorUnchosenByStudent(stuId, start, pagesize));
     }
 
+    @GetMapping("/get_capacity")
+    public Result getCapacity(String courseId) {
+        if (courseId == null) return new Result(1, "params not fulfilled");
+        return Result.success(courseService.getCapacity(courseId));
+    }
+
     @PostMapping("/choose_course")
     public Result chooseCourse(@RequestBody @NotNull CourseSheet sheet) {
         if (sheet.getStuId() == null || sheet.getCourses() == null) {

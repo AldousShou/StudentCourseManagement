@@ -171,6 +171,24 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.selectUnchosen(student, course, start, pagesize);
     }
 
+    @Override
+    public CourseCapacity getCapacity(@NotNull String courseId) {
+        String countKey = redisUtil.concatKeys("course", "count", courseId);
+        String capacityKey = redisUtil.concatKeys("course", "capacity", courseId);
+        if (redisUtil.hasKey(countKey) && redisUtil.hasKey(capacityKey)) {
+            Long capacity = Long.valueOf(redisUtil.get(capacityKey));
+            Long count = Long.valueOf(redisUtil.get(countKey));
+            Long selection = capacity - count;
+            return new CourseCapacity(courseId, capacity, selection);
+        } else {
+            Course course = new Course(); course.setCourseId(courseId);
+            CourseCapacity capacity = courseDao.getCapacity(course);
+            redisUtil.set(capacityKey, capacity.getCapacity().toString());
+            redisUtil.set(countKey, String.valueOf(capacity.getCapacity() - capacity.getSelection()));
+            return capacity;
+        }
+    }
+
 
     @Override
     public List<Course> chooseCourse(CourseSheet sheet) {
@@ -195,6 +213,7 @@ public class CourseServiceImpl implements CourseService {
                     String redisKey = redisUtil.concatKeys("course", "count", c.getCourseId());
                     CourseCapacity capacity = courseDao.getCapacity(course);
                     long avail = capacity.getCapacity() - capacity.getSelection();
+                    redisUtil.set(redisUtil.concatKeys("course", "capacity"), capacity.getCapacity().toString());
                     redisUtil.set(redisKey, String.valueOf(avail));
                 }
                 // 设置 cacheready

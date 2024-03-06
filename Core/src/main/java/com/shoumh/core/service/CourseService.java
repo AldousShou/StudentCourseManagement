@@ -2,6 +2,7 @@ package com.shoumh.core.service;
 
 import com.shoumh.core.common.CourseStatus;
 import com.shoumh.core.pojo.Course;
+import com.shoumh.core.pojo.CourseCapacity;
 import com.shoumh.core.pojo.CourseSheet;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +26,8 @@ public interface CourseService {
 
     public List<Course> getCurrentMajorUnchosenByStudent(@NotNull String stuId, Integer start, Integer pagesize);
     public List<Course> getMajorUnchosenByStudent(@NotNull String stuId, Integer year, Integer semester, Integer start, Integer pagesize);
+
+    public CourseCapacity getCapacity(@NotNull String courseId);
 
 
     public List<Course> chooseCourse(CourseSheet sheet);

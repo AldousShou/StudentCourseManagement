@@ -64,4 +64,9 @@ public class RedisUtil {
     public Long decr(String key) {
         return redisTemplate.opsForValue().decrement(key);
     }
+
+    // incr num
+    public Long incr(String key) {
+        return redisTemplate.opsForValue().increment(key);
+    }
 }

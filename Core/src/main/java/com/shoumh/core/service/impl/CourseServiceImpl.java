@@ -234,6 +234,7 @@ public class CourseServiceImpl implements CourseService {
                 }
             } else {
                 // redis 中不存在 key, 则认为不存在该课程
+                redisUtil.incr(courseKey);
                 failure.add(course);
             }
         }

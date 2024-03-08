@@ -7,6 +7,9 @@ import com.shoumh.core.pojo.CourseSheet;
 import com.shoumh.core.pojo.Student;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * 用来处理与选课相关的异步操作
+ */
 public interface CourseAsyncService {
 
     /* --------------------------

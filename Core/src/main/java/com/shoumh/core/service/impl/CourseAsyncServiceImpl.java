@@ -11,6 +11,7 @@ import com.shoumh.core.pojo.*;
 import com.shoumh.core.pojo.template.CourseTemplate;
 import com.shoumh.core.pojo.template.StudentTemplate;
 import com.shoumh.core.service.CourseAsyncService;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class CourseAsyncServiceImpl implements CourseAsyncService {
 
@@ -66,6 +68,17 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
 
         // 预选课
         String courseCountkey = redisUtil.concatKeys("course", "count", course.getCourseId());
+        // 查看是否在内存中 **注意：需要先暖机**
+        if (!redisUtil.hasKey(courseCountkey)) {
+            CourseCapacity capacity = courseDao.getCapacity(course);
+            if (capacity == null) {
+                log.warn("[CourseAsyncService] getting course '{}' with capacity null", course.getCourseId());
+                redisUtil.set(courseCountkey, "0");
+            }
+            else {
+                redisUtil.set(courseCountkey, String.valueOf(capacity.getCapacity() - capacity.getSelection()));
+            }
+        }
         if (redisUtil.decr(courseCountkey) < 0) {
             redisUtil.incr(courseCountkey);
             return ChoiceStatus.NOT_RUBBED;

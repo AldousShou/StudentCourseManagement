@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerTemplateAvailabilityProvider;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,11 @@ public class StudentController {
     private StudentCourseService studentCourseService;
     @Autowired
     private CourseService courseService;
+
+    @GetMapping("/ping")
+    public Result ping() {
+        return Result.success("PONG");
+    }
 
     @GetMapping("/get_stu_info")
     public Result getStuInfo(String stuId) {

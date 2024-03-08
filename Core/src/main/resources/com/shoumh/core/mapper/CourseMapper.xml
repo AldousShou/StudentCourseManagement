@@ -239,7 +239,7 @@
     </insert>
 
     <update id="updateChoiceLog">
-        update choice_log set status = #{status}
+        update choice_log set status = #{status}, last_update_time = current_timestamp
         where uuid = #{uuid} and stu_id = #{stuId} and course_id = #{courseId};
     </update>
 
@@ -262,7 +262,7 @@
 
 
     <update id="updateChoiceSheetLog">
-        update choice_sheet_status set status = #{status}
+        update choice_sheet_status set status = #{status}, last_update_time = current_timestamp
         where uuid = #{uuid};
     </update>
 

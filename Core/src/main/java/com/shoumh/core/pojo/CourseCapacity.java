@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * 课程容量信息，包含课程大小和课程已选择人数
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -114,14 +114,14 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
         for (ChoiceResult choiceResult: sheet.getChoiceResults()) {
             courseDao.updateChoiceStatus(sheet.getUuid(), sheet.getStuId(),
                     choiceResult.getCourseId(),
-                    choiceResult.getCourseStatus());
+                    choiceResult.getStatus());
         }
     }
 
     @Override
     public void writeChoiceSheet(@NotNull ChoiceSheetResult sheetResult) {
         for (ChoiceResult choiceResult: sheetResult.getChoiceResults()) {
-            if (choiceResult.getCourseStatus().equals(ChoiceStatus.SUCCESS)) {
+            if (choiceResult.getStatus().equals(ChoiceStatus.SUCCESS)) {
                 courseDao.choose(sheetResult.getStuId(),
                         CourseTemplate.courseWithCourseId(choiceResult.getCourseId()));
             }

@@ -8,6 +8,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * 结果，用于返回给前端
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

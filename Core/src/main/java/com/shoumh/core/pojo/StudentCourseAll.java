@@ -10,9 +10,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 
- * @TableName student_course_all_view
+ * 学生与课程混合表
+ * **已弃用**
+ * @see Student
+ * @see Course
  */
+@Deprecated
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

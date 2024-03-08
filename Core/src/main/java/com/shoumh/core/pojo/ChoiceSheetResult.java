@@ -8,6 +8,10 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * 表单结果
+ * 即学生选课表单中各个课程的选课成功状态
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

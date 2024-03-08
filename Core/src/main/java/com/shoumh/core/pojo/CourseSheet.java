@@ -8,6 +8,10 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * 学生选课表单，不包含结果信息
+ * @see ChoiceSheetResult
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

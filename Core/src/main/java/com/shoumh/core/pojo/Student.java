@@ -9,8 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 学生信息表
- * @TableName student
+ * 学生信息
+ * @see Course
  */
 @Data
 @AllArgsConstructor

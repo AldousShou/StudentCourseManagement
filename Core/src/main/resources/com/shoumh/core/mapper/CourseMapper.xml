@@ -54,7 +54,7 @@
         where a.status = 'normal' and a.stu_id = #{stuId};
     </select>
 
-    <select id="selectAllSeletive" resultMap="BaseResultMap">
+    <select id="selectAllSelective" resultMap="BaseResultMap">
         # 当 student == null 时，访问 status 没有意义。
         <choose>
             <when test="student == null">  # 如果 stuent 为 null，则返回全集数据

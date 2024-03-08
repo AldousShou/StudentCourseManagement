@@ -25,7 +25,7 @@ public class CourseDao {
      */
     public List<Course> selectByYearAndSemester(Integer year, Integer semester, Integer start, Integer pagesize) {
         Course course = CourseTemplate.courseWithYearAndSemester(year, semester);
-        return courseMapper.selectAllSeletive(null, course, null, start, pagesize);
+        return courseMapper.selectAllSelective(null, course, null, start, pagesize);
     }
 
     /**
@@ -36,7 +36,7 @@ public class CourseDao {
                                      Integer start, Integer pagesize) {
         if (student.getStuId() == null) return null;
         Student stu = StudentTemplate.studentWithId(student.getStuId());
-        return courseMapper.selectAllSeletive(stu, course, status==null?null:status.toString(), start, pagesize);
+        return courseMapper.selectAllSelective(stu, course, status==null?null:status.toString(), start, pagesize);
     }
 
     /**
@@ -63,7 +63,7 @@ public class CourseDao {
      * 底层接口
      */
     public List<Course> select(Student student, Course course, CourseStatus status, Integer start, Integer pagesize) {
-        return courseMapper.selectAllSeletive(student, course, status==null?null:status.toString(), start, pagesize);
+        return courseMapper.selectAllSelective(student, course, status==null?null:status.toString(), start, pagesize);
     }
 
     /**

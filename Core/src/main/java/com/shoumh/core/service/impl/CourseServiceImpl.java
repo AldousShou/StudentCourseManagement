@@ -2,6 +2,7 @@ package com.shoumh.core.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.shoumh.core.common.ChoiceStatus;
 import com.shoumh.core.common.CourseStatus;
 import com.shoumh.core.common.SystemConstant;
 import com.shoumh.core.dao.CourseDao;
@@ -10,19 +11,26 @@ import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseCapacity;
 import com.shoumh.core.pojo.CourseSheet;
 import com.shoumh.core.pojo.Student;
+import com.shoumh.core.pojo.template.CourseTemplate;
+import com.shoumh.core.pojo.template.StudentTemplate;
 import com.shoumh.core.service.CourseService;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+@Slf4j
 @Service
 public class CourseServiceImpl implements CourseService {
 
@@ -30,6 +38,8 @@ public class CourseServiceImpl implements CourseService {
     private CourseDao courseDao;
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     private static final Integer YEAR = SystemConstant.YEAR;
     private static final Integer SEMESTER = SystemConstant.SEMESTER;
@@ -191,55 +201,21 @@ public class CourseServiceImpl implements CourseService {
 
 
     @Override
-    public List<Course> chooseCourse(CourseSheet sheet) {
-        String stuId = sheet.getStuId();
-        Integer major = sheet.getMajor();  // #TODO: 检查是否符合该专业
+    public String chooseCourse(CourseSheet sheet) {
+        String uuid = String.valueOf(UUID.randomUUID());
+        sheet.setUuid(uuid);
 
-        ArrayList<Course> failure = new ArrayList<>();
-        for (Course course: sheet.getCourses()) {
-            if (course.getCourseId() == null) {
-                failure.add(course);
-                continue;
-            }
+        try {
+            rabbitTemplate.convertAndSend(SystemConstant.DEFAULT_QUEUE, sheet);
+        } catch (AmqpException exception) {
+            log.info("unable to send to rabbitmq, record uuid: {}", sheet.getUuid());
 
-            // 查看 redis 中缓存是否有效
-            // WARNING: 请先使用 warm-up 将所有课程数据读入 cache
-            cacheReadyLock.lock();
-            if (redisUtil.hasKey(cacheReadyKey)) cacheReadyLock.unlock();
-            else {
-                // 获取所有的课程, 并为其创建 redis 索引
-                List<Course> courses = courseDao.selectByYearAndSemester(YEAR, SEMESTER, null, null);
-                for (Course c: courses) {
-                    String redisKey = redisUtil.concatKeys("course", "count", c.getCourseId());
-                    CourseCapacity capacity = courseDao.getCapacity(course);
-                    long avail = capacity.getCapacity() - capacity.getSelection();
-                    redisUtil.set(redisUtil.concatKeys("course", "capacity"), capacity.getCapacity().toString());
-                    redisUtil.set(redisKey, String.valueOf(avail));
-                }
-                // 设置 cacheready
-                redisUtil.set(cacheReadyKey, "OK");
-                cacheReadyLock.unlock();
-            }
-
-            // 尝试选课
-            String courseKey = redisUtil.concatKeys("course", "count", course.getCourseId());
-            if (redisUtil.hasKey(courseKey)) {
-                // redis 中存在 key
-                if (redisUtil.decr(courseKey) >= 0) {
-                    // 成功有抢课的资格
-                    courseDao.choose(stuId, course);
-                } else {
-                    // 数量小于 0，未成功选到
-                    failure.add(course);
-                }
-            } else {
-                // redis 中不存在 key, 则认为不存在该课程
-                redisUtil.incr(courseKey);
-                failure.add(course);
-            }
+            new Thread(()->{
+                log.info("new thread to handle rabbitmq send err not implemented");
+            }).start();
         }
 
-        return failure;
+        return uuid;
     }
 
 }

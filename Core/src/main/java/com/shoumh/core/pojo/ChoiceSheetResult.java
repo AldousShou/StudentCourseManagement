@@ -11,11 +11,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CourseSheet implements Serializable {
-    private String uuid;
-    private String stuId;
-    private Integer major;
-    private List<Course> courses;
+public class ChoiceSheetResult implements Serializable {
+    String stuId;
+    String uuid;
+    List<ChoiceResult> choiceResults;
 
     @Serial
     private static final long serialVersionUID = 1L;

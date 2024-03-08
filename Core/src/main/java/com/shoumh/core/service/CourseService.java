@@ -1,9 +1,11 @@
 package com.shoumh.core.service;
 
+import com.shoumh.core.common.ChoiceStatus;
 import com.shoumh.core.common.CourseStatus;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseCapacity;
 import com.shoumh.core.pojo.CourseSheet;
+import com.shoumh.core.pojo.Student;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -30,6 +32,11 @@ public interface CourseService {
     public CourseCapacity getCapacity(@NotNull String courseId);
 
 
-    public List<Course> chooseCourse(CourseSheet sheet);
+    /**
+     * 学生选课
+     * @param sheet CourseSheet，选课相关内容
+     * @return 返回选课表代码，用于查询选课进度及结果
+     */
+    public String chooseCourse(CourseSheet sheet);
 
 }

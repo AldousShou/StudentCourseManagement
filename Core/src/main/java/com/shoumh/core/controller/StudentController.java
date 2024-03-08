@@ -108,9 +108,8 @@ public class StudentController {
         if (sheet.getStuId() == null || sheet.getCourses() == null) {
             return new Result(1, "failed to parse stu id and course info", null);
         } else {
-            List<Course> courses = courseService.chooseCourse(sheet);
-            if (courses.isEmpty()) return Result.success();
-            else return new Result(2, "cannot choose some of the courses", courses);
+            String uuid = courseService.chooseCourse(sheet);
+            return Result.success(uuid);
         }
     }
 }

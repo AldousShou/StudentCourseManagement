@@ -1,10 +1,13 @@
 package com.shoumh.core.dao;
 
+import com.shoumh.core.common.ChoiceStatus;
 import com.shoumh.core.common.CourseStatus;
 import com.shoumh.core.mapper.CourseMapper;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseCapacity;
 import com.shoumh.core.pojo.Student;
+import com.shoumh.core.pojo.template.CourseTemplate;
+import com.shoumh.core.pojo.template.StudentTemplate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -19,9 +22,6 @@ public class CourseDao {
 
     /**
      * 根据 year 和 semester 来选择所有公共课
-     * @param year year
-     * @param semester semester
-     * @return courses
      */
     public List<Course> selectByYearAndSemester(Integer year, Integer semester, Integer start, Integer pagesize) {
         Course course = CourseTemplate.courseWithYearAndSemester(year, semester);
@@ -44,6 +44,19 @@ public class CourseDao {
     }
 
     /**
+     * 获得已经选择的课
+     * @param student 要求 stuId 不为空，若为空则返回 null
+     */
+    public Boolean hasChosen(@NotNull Student student, Course course, CourseStatus status) {
+        if (student.getStuId() == null) return null;
+        Student stu = StudentTemplate.studentWithId(student.getStuId());
+        Boolean res = courseMapper.hasAllSelective(stu, course, status==null?null:status.toString());
+        return res;
+    }
+
+
+
+    /**
      * 获得所有未选择的课
      * @param student 要求 stuId 不为空，否则返回 null
      */
@@ -60,6 +73,10 @@ public class CourseDao {
         return courseMapper.selectAllSeletive(student, course, status==null?null:status.toString(), start, pagesize);
     }
 
+    public List<Course> selectPredecessor(Course course) {
+        return courseMapper.selectPredecessor(course);
+    }
+
     public void choose(String stuId, Course course) {
         courseMapper.choose(stuId, course);
     }
@@ -68,26 +85,19 @@ public class CourseDao {
         return courseMapper.selectCapacity(course);
     }
 
-
-}
-
-class StudentTemplate {
-    private StudentTemplate() {}
-
-    public static Student studentWithId(String stuId) {
-        Student student = new Student();
-        student.setStuId(stuId);
-        return student;
+    public void logChoiceStatus(@NotNull String uuid, @NotNull String stuId, @NotNull Course course, ChoiceStatus status) {
+        courseMapper.insertChoiceLog(uuid, stuId, course, status);
     }
-}
 
-class CourseTemplate {
-    private CourseTemplate() {}
+    public void updateChoiceStatus(@NotNull String uuid, @NotNull String stuId, @NotNull Course course, ChoiceStatus status) {
+        courseMapper.updateChoiceLog(uuid, stuId, course, status);
+    }
 
-    public static Course courseWithYearAndSemester(Integer year, Integer semester) {
-        Course course = new Course();
-        course.setYear(year);
-        course.setSemester(semester);
-        return course;
+    public void logChoiceSheetStatus(@NotNull String uuid, ChoiceStatus status) {
+        courseMapper.insertChoiceSheetLog(uuid, status);
+    }
+
+    public void updateChoiceSheetStatus(@NotNull String uuid, @NotNull ChoiceStatus status) {
+        courseMapper.updateChoiceSheetLog(uuid, status);
     }
 }

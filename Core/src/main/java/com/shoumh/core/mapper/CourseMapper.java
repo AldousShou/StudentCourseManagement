@@ -1,5 +1,6 @@
 package com.shoumh.core.mapper;
 
+import com.shoumh.core.common.ChoiceStatus;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseCapacity;
 import com.shoumh.core.pojo.Student;
@@ -31,12 +32,24 @@ public interface CourseMapper {
     List<Course> selectAllSeletive(Student student, Course course, String status, Integer start, Integer pagesize);
 
     /**
+     * 根据指定条件，如果包含数据，则返回 true, 否则 false
+     */
+    Boolean hasAllSelective(Student student, Course course, String status);
+
+    /**
      * 根据 student.stuId 来筛选出结果，选出该学生尚未选修的课
      * @param student 要求 stuId 不为空
      * @param course 可以为空，根据条件筛选课程
      * @return courses
      */
     List<Course> selectUnchosenSelective(@NotNull Student student, Course course, Integer start, Integer pagesize);
+
+    /**
+     * 找到课程的先导课，如果没有返回 null
+     * @param course 要求 id 不为空, 并且只用到 courseId 一个值
+     * @return 仅返回 courseId，course 的其他内容为空
+     */
+    List<Course> selectPredecessor(@NotNull Course course);
 
     /**
      * 学生选课
@@ -51,5 +64,13 @@ public interface CourseMapper {
      * @return 课程剩余数量
      */
     CourseCapacity selectCapacity(@NotNull Course course);
+
+    void insertChoiceLog(@NotNull String uuid, @NotNull String stuId, @NotNull Course course, ChoiceStatus status);
+
+    void updateChoiceLog(@NotNull String uuid, @NotNull String stuId, @NotNull Course course, @NotNull ChoiceStatus status);
+
+    void insertChoiceSheetLog(@NotNull String uuid, ChoiceStatus status);
+
+    void updateChoiceSheetLog(@NotNull String uuid, @NotNull ChoiceStatus status);
 
 }

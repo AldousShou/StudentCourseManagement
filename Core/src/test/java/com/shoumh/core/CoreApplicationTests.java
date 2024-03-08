@@ -2,6 +2,7 @@ package com.shoumh.core;
 
 import com.google.gson.Gson;
 import com.shoumh.core.mapper.StudentMapper;
+import com.shoumh.core.pojo.CourseSheet;
 import com.shoumh.core.pojo.Student;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

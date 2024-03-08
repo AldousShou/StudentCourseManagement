@@ -45,8 +45,7 @@ public class CourseDao {
      */
     public Boolean hasChosen(@NotNull Student student, Course course, CourseStatus status) {
         if (student.getStuId() == null) return null;
-        Student stu = StudentTemplate.studentWithId(student.getStuId());
-        return courseMapper.hasAllSelective(stu, course, status==null?null:status.toString());
+        return courseMapper.hasAllSelective(student, course, status==null?null:status.toString());
     }
 
 

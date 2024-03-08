@@ -1,8 +1,11 @@
 package com.shoumh.core.mapper;
 
 import com.google.gson.Gson;
+import com.shoumh.core.common.CourseStatus;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.Student;
+import com.shoumh.core.pojo.template.CourseTemplate;
+import com.shoumh.core.pojo.template.StudentTemplate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +38,17 @@ class CourseMapperTest {
         course.setHasMajorDemand(0);
         String json = gson.toJson(courseMapper.selectUnchosenSelective(student, course, 0, 50));
         System.out.println(json);
+    }
+
+    @Test
+    void hasAllSelective() {
+        String stuId = "01";
+        String courseId = "101";
+        CourseStatus status = null;
+        Student student = StudentTemplate.studentWithId(stuId);
+        Course course = CourseTemplate.courseWithCourseId(courseId);
+        Boolean res = courseMapper.hasAllSelective(student, course, status==null?null:status.toString());
+        System.out.println(res);
     }
 
 }

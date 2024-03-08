@@ -201,45 +201,26 @@
             </when>
 
             <otherwise>  # 如果 student 不为 null，则返回学生数据
-                <if test="student.stuId != null">  # 如果 stu_id 不为 null，则直接返回对应学生信息
-                    select
-                        count(1) as num
-                    from student_course a inner join school.course_view c on c.course_id = a.course_id
-                    <where>
-                        stu_id = #{student.stuId}
-                        <if test="status != null">and status = #{status}</if>
-                    </where>
-                </if>
+                select
+                count(1) as num
+                from student_course a inner join course_view c on c.course_id = a.course_id
+                <where>
+                    stu_id = #{student.stuId}
+                    <if test="status != null">and status = #{status}</if>
 
-                <if test="student.stuId == null"> # 如果 stu_id 为 null，则筛选相关信息
-                    select
-                        count(1) as num
-                    from student_course a
-                    inner join school.course_view c on c.course_id = a.course_id
-                    inner join school.student s on a.stu_id = s.stu_id
-                    inner join school.teacher t on c.teacher_id = t.id
-
-                    <where>
-                        <if test="student.name != null">and s.name = #{student.name}</if>
-                        <if test="student.gender != null">and s.gender = #{student.gender}</if>
-                        <if test="student.entryDt != null">and s.entry_dt = #{student.entryDt}</if>
-                        <if test="student.graduateDt != null">and s.graduate_dt = #{student.graduateDt}</if>
-                        <if test="student.college != null">and s.college = #{student.college}</if>
-
-                        <if test="course != null">
-                            <if test="course.courseId != null">and c.course_id = #{course.courseId}</if>
-                            <if test="course.courseName != null">and c.course_name = #{course.courseName}</if>
-                            <if test="course.teacherId != null">and c.teacher_id = #{course.teacherId}</if>
-                            <if test="course.credit != null">and c.credit = #{course.credit}</if>
-                            <if test="course.location != null">and c.location = #{course.location}</if>
-                            <if test="course.hasPredecessor != null">and c.has_predecessor = #{course.hasPredecessor}</if>
-                            <if test="course.hasMajorDemand != null">and c.has_major_demand = #{course.hasMajorDemand}</if>
-                            <if test="course.year != null">and c.year = #{course.year}</if>
-                            <if test="course.semester != null">and c.semester = #{course.semester}</if>
-                            <if test="course.teacherName != null">and c.teacher_name = #{course.teacherName}</if>
-                        </if>
-                    </where>
-                </if>
+                    <if test="course != null">
+                        <if test="course.courseId != null">and c.course_id = #{course.courseId}</if>
+                        <if test="course.courseName != null">and c.course_name = #{course.courseName}</if>
+                        <if test="course.teacherId != null">and c.teacher_id = #{course.teacherId}</if>
+                        <if test="course.credit != null">and c.credit = #{course.credit}</if>
+                        <if test="course.location != null">and c.location = #{course.location}</if>
+                        <if test="course.hasPredecessor != null">and c.has_predecessor = #{course.hasPredecessor}</if>
+                        <if test="course.hasMajorDemand != null">and c.has_major_demand = #{course.hasMajorDemand}</if>
+                        <if test="course.year != null">and c.year = #{course.year}</if>
+                        <if test="course.semester != null">and c.semester = #{course.semester}</if>
+                        <if test="course.teacherName != null">and c.teacher_name = #{course.teacherName}</if>
+                    </if>
+                </where>
             </otherwise>
         </choose>
     </select>

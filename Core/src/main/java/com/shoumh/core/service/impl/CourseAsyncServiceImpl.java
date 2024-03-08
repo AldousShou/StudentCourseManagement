@@ -6,6 +6,7 @@ import com.shoumh.core.common.CourseStatus;
 import com.shoumh.core.common.SystemConstant;
 import com.shoumh.core.dao.CourseDao;
 import com.shoumh.core.dao.RedisUtil;
+import com.shoumh.core.dao.StudentDao;
 import com.shoumh.core.pojo.*;
 import com.shoumh.core.pojo.template.CourseTemplate;
 import com.shoumh.core.pojo.template.StudentTemplate;
@@ -29,6 +30,8 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
     @Autowired
     private CourseDao courseDao;
     @Autowired
+    private StudentDao studentDao;
+    @Autowired
     private RabbitTemplate rabbitTemplate;
 
     @Override
@@ -41,6 +44,7 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
 
         for (Course course: sheet.getCourses()) {
             ChoiceStatus status = checkChoiceLegality(student, course);
+            assert status != null;
             choiceResults.add(new ChoiceResult(course.getCourseId(), status));
         }
 
@@ -51,8 +55,13 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
 
     @Override
     public ChoiceStatus checkChoiceLegality(@NotNull Student student, @NotNull Course course) {
-        if (student.getStuId() == null || student.getMajor() == null || course.getCourseId() == null) {
-            return null;  // 要求 stuId，major，courseId 不为空
+        if (student.getStuId() == null || course.getCourseId() == null) {
+            return null;  // 要求 stuId，courseId 不为空
+        }
+
+        // 要求 major 不为空
+        if (student.getMajor() == null) {
+            student = studentDao.getStuInfo(student.getStuId());
         }
 
         // 预选课
@@ -70,16 +79,15 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
             redisUtil.setWithExpiration(courseKey, gson.toJson(course), 1, TimeUnit.DAYS);
         }
 
-        Student s = StudentTemplate.studentWithBasicSettings(student.getStuId(), null, null, student.getMajor());
         // 查看是否已经选择该课程
-        if (courseDao.hasChosen(s, course, CourseStatus.NORMAL)) {
+        if (courseDao.hasChosen(student, course, CourseStatus.NORMAL)) {
             redisUtil.incr(courseCountkey);
             return ChoiceStatus.CHOICE_DUPLICATED;
         }
 
         // 查看是否符合专业
         if (course.getHasMajorDemand() > 0 && courseDao.select(
-                s, course, CourseStatus.ENDED, null, null).isEmpty()) {
+                student, course, CourseStatus.ENDED, null, null).isEmpty()) {
             redisUtil.incr(courseCountkey);
             return ChoiceStatus.MAJOR_UNFULFILLED;
         }
@@ -88,7 +96,7 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
         if (course.getHasPredecessor() > 0) {
             List<Course> predecessorCourses = courseDao.selectPredecessor(course);
             for (Course c: predecessorCourses) {
-                if (!courseDao.hasChosen(s, c, CourseStatus.ENDED)) {
+                if (!courseDao.hasChosen(student, c, CourseStatus.ENDED)) {
                     redisUtil.incr(courseCountkey);
                     return ChoiceStatus.PREDECESSOR_UNCHOSEN;
                 }

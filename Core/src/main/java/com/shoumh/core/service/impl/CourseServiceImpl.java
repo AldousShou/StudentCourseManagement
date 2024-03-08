@@ -206,7 +206,7 @@ public class CourseServiceImpl implements CourseService {
         sheet.setUuid(uuid);
 
         try {
-            rabbitTemplate.convertAndSend(SystemConstant.DEFAULT_QUEUE, sheet);
+            rabbitTemplate.convertAndSend(SystemConstant.CHOICE_BEFORE_EXCHANGE, "", sheet);
         } catch (AmqpException exception) {
             log.info("unable to send to rabbitmq, record uuid: {}", sheet.getUuid());
 

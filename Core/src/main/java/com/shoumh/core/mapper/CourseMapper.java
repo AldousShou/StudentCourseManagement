@@ -65,9 +65,9 @@ public interface CourseMapper {
      */
     CourseCapacity selectCapacity(@NotNull Course course);
 
-    void insertChoiceLog(@NotNull String uuid, @NotNull String stuId, @NotNull Course course, ChoiceStatus status);
+    void insertChoiceLog(@NotNull String uuid, @NotNull String stuId, @NotNull String courseId, ChoiceStatus status);
 
-    void updateChoiceLog(@NotNull String uuid, @NotNull String stuId, @NotNull Course course, @NotNull ChoiceStatus status);
+    void updateChoiceLog(@NotNull String uuid, @NotNull String stuId, @NotNull String courseId, @NotNull ChoiceStatus status);
 
     void insertChoiceSheetLog(@NotNull String uuid, ChoiceStatus status);
 

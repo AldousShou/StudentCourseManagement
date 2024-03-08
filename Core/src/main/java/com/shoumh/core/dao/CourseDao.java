@@ -56,8 +56,7 @@ public class CourseDao {
      */
     public List<Course> selectUnchosen(@NotNull Student student, @NotNull Course course,
                                        Integer start, Integer pagesize) {
-        List<Course> courses = courseMapper.selectUnchosenSelective(student, course, start, pagesize);
-        return courses;
+        return courseMapper.selectUnchosenSelective(student, course, start, pagesize);
     }
 
     /**
@@ -94,15 +93,15 @@ public class CourseDao {
     /**
      * 记录选课表单单条选课信息及状态
      */
-    public void logChoiceStatus(@NotNull String uuid, @NotNull String stuId, @NotNull Course course, ChoiceStatus status) {
-        courseMapper.insertChoiceLog(uuid, stuId, course, status);
+    public void logChoiceStatus(@NotNull String uuid, @NotNull String stuId, @NotNull String courseId, ChoiceStatus status) {
+        courseMapper.insertChoiceLog(uuid, stuId, courseId, status);
     }
 
     /**
      * 更新选课表单单条选课状态
      */
-    public void updateChoiceStatus(@NotNull String uuid, @NotNull String stuId, @NotNull Course course, ChoiceStatus status) {
-        courseMapper.updateChoiceLog(uuid, stuId, course, status);
+    public void updateChoiceStatus(@NotNull String uuid, @NotNull String stuId, @NotNull String courseId, ChoiceStatus status) {
+        courseMapper.updateChoiceLog(uuid, stuId, courseId, status);
     }
 
     /**

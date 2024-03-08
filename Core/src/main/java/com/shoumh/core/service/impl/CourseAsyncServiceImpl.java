@@ -101,7 +101,7 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
     public void logSheetStatus(@NotNull CourseSheet sheet) {
         courseDao.logChoiceSheetStatus(sheet.getUuid(), null);
         for (Course course: sheet.getCourses()) {
-            courseDao.logChoiceStatus(sheet.getUuid(), sheet.getStuId(), course, null);
+            courseDao.logChoiceStatus(sheet.getUuid(), sheet.getStuId(), course.getCourseId(), null);
         }
     }
 
@@ -113,7 +113,7 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
         // 更新 course 状态
         for (ChoiceResult choiceResult: sheet.getChoiceResults()) {
             courseDao.updateChoiceStatus(sheet.getUuid(), sheet.getStuId(),
-                    CourseTemplate.courseWithCourseId(choiceResult.getCourseId()),
+                    choiceResult.getCourseId(),
                     choiceResult.getCourseStatus());
         }
     }

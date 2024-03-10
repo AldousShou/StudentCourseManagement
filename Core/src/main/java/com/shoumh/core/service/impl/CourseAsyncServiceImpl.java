@@ -8,8 +8,6 @@ import com.shoumh.core.dao.CourseDao;
 import com.shoumh.core.dao.RedisUtil;
 import com.shoumh.core.dao.StudentDao;
 import com.shoumh.core.pojo.*;
-import com.shoumh.core.pojo.template.CourseTemplate;
-import com.shoumh.core.pojo.template.StudentTemplate;
 import com.shoumh.core.service.CourseAsyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +40,8 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
         result.setStuId(sheet.getStuId());
         result.setUuid(sheet.getUuid());
         ArrayList<ChoiceResult> choiceResults = new ArrayList<>();
-        Student student = StudentTemplate.studentWithId(sheet.getStuId());
+//        Student student = StudentTemplate.studentWithId(sheet.getStuId());
+        Student student = Student.builder().stuId(sheet.getStuId()).build();
 
         for (Course course: sheet.getCourses()) {
             ChoiceStatus status = checkChoiceLegality(student, course);
@@ -144,7 +143,9 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
         for (ChoiceResult choiceResult: sheetResult.getChoiceResults()) {
             if (choiceResult.getStatus().equals(ChoiceStatus.SUCCESS)) {
                 courseDao.choose(sheetResult.getStuId(),
-                        CourseTemplate.courseWithCourseId(choiceResult.getCourseId()));
+//                        CourseTemplate.courseWithCourseId(choiceResult.getCourseId())
+                        Course.builder().courseId(choiceResult.getCourseId()).build()
+                );
             }
         }
     }

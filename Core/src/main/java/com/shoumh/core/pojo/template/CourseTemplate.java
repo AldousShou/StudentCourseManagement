@@ -3,6 +3,7 @@ package com.shoumh.core.pojo.template;
 import com.shoumh.core.pojo.Course;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public class CourseTemplate {
     private CourseTemplate() {}
 

@@ -5,14 +5,17 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * 课程信息
+ * **注意：请使用 builder 来创建**
  * @see Student
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Course implements Serializable {

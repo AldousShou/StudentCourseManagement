@@ -6,8 +6,6 @@ import com.shoumh.core.mapper.CourseMapper;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseCapacity;
 import com.shoumh.core.pojo.Student;
-import com.shoumh.core.pojo.template.CourseTemplate;
-import com.shoumh.core.pojo.template.StudentTemplate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -24,7 +22,8 @@ public class CourseDao {
      * 根据 year 和 semester 来选择课程
      */
     public List<Course> selectByYearAndSemester(Integer year, Integer semester, Integer start, Integer pagesize) {
-        Course course = CourseTemplate.courseWithYearAndSemester(year, semester);
+//        Course course = CourseTemplate.courseWithYearAndSemester(year, semester);
+        Course course = Course.builder().year(year).semester(semester).build();
         return courseMapper.selectAllSelective(null, course, null, start, pagesize);
     }
 
@@ -35,7 +34,8 @@ public class CourseDao {
     public List<Course> selectChosen(@NotNull Student student, Course course, CourseStatus status,
                                      Integer start, Integer pagesize) {
         if (student.getStuId() == null) return null;
-        Student stu = StudentTemplate.studentWithId(student.getStuId());
+//        Student stu = StudentTemplate.studentWithId(student.getStuId());
+        Student stu = Student.builder().stuId(student.getStuId()).build();
         return courseMapper.selectAllSelective(stu, course, status==null?null:status.toString(), start, pagesize);
     }
 

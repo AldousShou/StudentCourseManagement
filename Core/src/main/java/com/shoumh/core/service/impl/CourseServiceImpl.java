@@ -11,8 +11,6 @@ import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseCapacity;
 import com.shoumh.core.pojo.CourseSheet;
 import com.shoumh.core.pojo.Student;
-import com.shoumh.core.pojo.template.CourseTemplate;
-import com.shoumh.core.pojo.template.StudentTemplate;
 import com.shoumh.core.service.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

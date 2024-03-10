@@ -5,14 +5,17 @@ import java.io.Serializable;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * 学生信息
+ * **注意：请使用 builder 来创建**
  * @see Course
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Student implements Serializable {

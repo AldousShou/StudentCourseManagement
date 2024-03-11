@@ -89,4 +89,10 @@ public interface CourseService {
      */
     public String chooseCourse(CourseSheet sheet);
 
+    /**
+     * 获取选课表单状态
+     * @param uuid 选课表单 uuid
+     */
+    public ChoiceStatus getSheetStatus(@NotNull String uuid);
+
 }

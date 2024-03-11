@@ -116,4 +116,11 @@ public class CourseDao {
     public void updateChoiceSheetStatus(@NotNull String uuid, @NotNull ChoiceStatus status) {
         courseMapper.updateChoiceSheetLog(uuid, status);
     }
+
+    /**
+     * 获得表单状态 uuid
+     */
+    public ChoiceStatus selectChoiceSheetStatus(@NotNull String uuid) {
+        return courseMapper.selectChoiceStatus(uuid);
+    }
 }

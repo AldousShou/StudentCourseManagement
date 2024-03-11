@@ -216,4 +216,9 @@ public class CourseServiceImpl implements CourseService {
         return uuid;
     }
 
+    @Override
+    public ChoiceStatus getSheetStatus(@NotNull String uuid) {
+        return courseDao.selectChoiceSheetStatus(uuid);
+    }
+
 }

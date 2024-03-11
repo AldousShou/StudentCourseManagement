@@ -247,6 +247,12 @@
         call sp_get_predecessor(#{courseId});
     </select>
 
+    <select id="selectChoiceStatus" resultType="com.shoumh.core.common.ChoiceStatus">
+        select status
+        from choice_sheet_status
+        where uuid = #{uuid};
+    </select>
+
     <insert id="insertChoiceSheetLog">
         <choose>
             <when test="status != null">

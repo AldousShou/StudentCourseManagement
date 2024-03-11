@@ -92,4 +92,9 @@ public interface CourseMapper {
      */
     void updateChoiceSheetLog(@NotNull String uuid, @NotNull ChoiceStatus status);
 
+    /**
+     * 获取表单状态
+     */
+    ChoiceStatus selectChoiceStatus(@NotNull String uuid);
+
 }

@@ -1,6 +1,7 @@
 package com.shoumh.core.mapper;
 
 import com.google.gson.Gson;
+import com.shoumh.core.common.ChoiceStatus;
 import com.shoumh.core.common.CourseStatus;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.Student;
@@ -49,6 +50,13 @@ class CourseMapperTest {
         Course course = Course.builder().courseId(courseId).build();
         Boolean res = courseMapper.hasAllSelective(student, course, status==null?null:status.toString());
         System.out.println(res);
+    }
+
+    @Test
+    void selectChoiceStatus() {
+        String uuid = "09e48670-da66-4442-a491-dbb1ab82a913";
+        ChoiceStatus status = courseMapper.selectChoiceStatus(uuid);
+        System.out.println(status);
     }
 
 }

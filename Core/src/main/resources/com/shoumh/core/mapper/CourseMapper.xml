@@ -277,7 +277,8 @@
 
             update course_capacity set selection = selection + 1 where course_id = #{course.courseId};
 
-            insert into student_course (stu_id, course_id, select_dt, status) values (#{stuId}, #{course.courseId}, current_date, 'normal');
+            insert into student_course (stu_id, course_id, select_dt, status)
+            values (#{stuId}, #{course.courseId}, current_date, 'normal');
 
         COMMIT ;
     </insert>

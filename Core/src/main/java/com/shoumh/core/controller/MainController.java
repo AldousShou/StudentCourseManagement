@@ -5,6 +5,7 @@ import com.shoumh.core.pojo.*;
 import com.shoumh.core.service.CourseService;
 import com.shoumh.core.service.StudentCourseService;
 import com.shoumh.core.service.StudentService;
+import com.shoumh.core.service.WarmUpService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,14 @@ public class MainController {
     private StudentCourseService studentCourseService;
     @Autowired
     private CourseService courseService;
+    @Autowired
+    private WarmUpService warmUpService;
+
+    @GetMapping("/warm_up")
+    public Result warmUp() {
+        warmUpService.warmUp();
+        return Result.success();
+    }
 
     @GetMapping("/ping")
     public Result ping() {

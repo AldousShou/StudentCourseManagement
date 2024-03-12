@@ -154,12 +154,8 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> getMajorChosenByStudent(@NotNull String stuId, CourseStatus status,
                                                 Integer year, Integer semester,
                                                 Integer start, Integer pagesize) {
-        Student student = new Student();
-        student.setStuId(stuId);
-        Course course = new Course();
-        course.setYear(year);
-        course.setSemester(semester);
-        course.setHasMajorDemand(1);
+        Student student = Student.builder().stuId(stuId).build();
+        Course course = Course.builder().year(year).semester(semester).hasMajorDemand(1).build();
 
         return courseDao.selectChosen(student, course, status, start, pagesize);
     }

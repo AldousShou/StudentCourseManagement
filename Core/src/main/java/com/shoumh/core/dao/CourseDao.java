@@ -35,8 +35,7 @@ public class CourseDao {
                                      Integer start, Integer pagesize) {
         if (student.getStuId() == null) return null;
 //        Student stu = StudentTemplate.studentWithId(student.getStuId());
-        Student stu = Student.builder().stuId(student.getStuId()).build();
-        return courseMapper.selectAllSelective(stu, course, status==null?null:status.toString(), start, pagesize);
+        return courseMapper.selectAllSelective(student, course, status==null?null:status.toString(), start, pagesize);
     }
 
     /**

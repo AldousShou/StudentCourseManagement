@@ -59,4 +59,10 @@ class CourseMapperTest {
         System.out.println(status);
     }
 
+    @Test
+    void selectCapacity() {
+        Course course = Course.builder().courseId("cm_000").build();
+        System.out.println(courseMapper.selectCapacity(course));
+    }
+
 }

@@ -21,6 +21,8 @@ public final class SystemConstant {
     public static final String CHOICE_CHECKED_QUEUE_DB = "fanout.choice_checked_queue_db";
     public static final String CHOICE_CHECKED_QUEUE_LOG = "fanout.choice_checked_queue_log";
 
+    public static final String LOG_EXCHANGE = "shoumh.log";
+    public static final String LOG_QUEUE = "fanout.log";
 
 
 }

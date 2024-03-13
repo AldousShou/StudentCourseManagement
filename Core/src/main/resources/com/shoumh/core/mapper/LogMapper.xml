@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoumh.core.mapper.LogMapper">
+
+    <resultMap id="BaseResultMap" type="com.shoumh.core.pojo.LogSheet">
+            <result property="uuid" column="uuid" jdbcType="VARCHAR"/>
+            <result property="startDateTime" column="start_datetime" jdbcType="TIMESTAMP"/>
+            <result property="endDateTime" column="end_datetime" jdbcType="TIMESTAMP"/>
+            <result property="durationInMillis" column="duration" jdbcType="VARCHAR"/>
+            <result property="className" column="class_name" jdbcType="VARCHAR"/>
+            <result property="functionName" column="function_name" jdbcType="VARCHAR"/>
+            <result property="params" column="params" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="log">
+        insert into log (uuid, start_datetime, end_datetime, duration, class_name, function_name, params, description)
+        values (#{uuid}, #{startDateTime}, #{endDateTime}, #{durationInMillis}, #{className}, #{functionName}, #{params}, #{description});
+    </insert>
+
+</mapper>

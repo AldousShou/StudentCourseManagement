@@ -1,6 +1,7 @@
 package com.shoumh.core.controller;
 
 import com.shoumh.core.annotation.AutoLog;
+import com.shoumh.core.annotation.RequestLimit;
 import com.shoumh.core.common.course.CourseStatus;
 import com.shoumh.core.common.SystemConstant;
 import com.shoumh.core.pojo.*;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Slf4j
@@ -29,6 +31,7 @@ public class MainController {
     @Autowired
     private WarmUpService warmUpService;
 
+    @RequestLimit(permitsPerSecond = 1)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/warm_up")
     public Result warmUp() {
@@ -36,12 +39,14 @@ public class MainController {
         return Result.success();
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/ping")
     public Result ping() {
         return Result.success("PONG");
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_stu_info")
     public Result getStuInfo(String stuId) {
@@ -50,6 +55,7 @@ public class MainController {
         return Result.success(student);
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/exist_user")
     public Result existUser(String stuId) {
@@ -57,6 +63,7 @@ public class MainController {
         return Result.success(exist);
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_public")
     public Result getCurrentPublic(@Param("start") Integer start, @Param("pagesize") Integer pagesize) {
@@ -64,6 +71,7 @@ public class MainController {
         return Result.success(courses);
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_public_chosen")
     public Result getPublicChosen(@Param("stuId") String stuId, @Param("status") String status,
@@ -84,6 +92,7 @@ public class MainController {
         return Result.success(courses);
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_public_unchosen")
     public Result getPublicUnchosen(String stuId, Integer start, Integer pagesize) {
@@ -92,12 +101,14 @@ public class MainController {
         return Result.success(courses);
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_major")
     public Result getMajor(Integer major, Integer start, Integer pagesize) {
         return Result.success(courseService.getCurrentMajor(major, start, pagesize));
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_major_chosen")
     public Result getMajorChosen(String stuId, String status, Integer start, Integer pagesize) {
@@ -114,12 +125,14 @@ public class MainController {
         return Result.success(courses);
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_major_unchosen")
     public Result getMajorUnchosen(String stuId, Integer start, Integer pagesize) {
         return Result.success(courseService.getCurrentMajorUnchosenByStudent(stuId, start, pagesize));
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_capacity")
     public Result getCapacity(String courseId) {
@@ -127,6 +140,7 @@ public class MainController {
         return Result.success(courseService.getCapacity(courseId));
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @PostMapping("/choose_course")
     public Result chooseCourse(@RequestBody @NotNull CourseSheet sheet) {
@@ -138,6 +152,7 @@ public class MainController {
         }
     }
 
+    @RequestLimit(permitsPerSecond = 1000)
     @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_sheet_status")
     public Result getSheetStatus(@RequestParam("uuid") String uuid) {

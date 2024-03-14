@@ -1,6 +1,7 @@
-package com.shoumh.core.annotation;
+package com.shoumh.core.annotation.aspect;
 
 import com.google.gson.Gson;
+import com.shoumh.core.annotation.AutoLog;
 import com.shoumh.core.common.log.LogLevel;
 import com.shoumh.core.common.log.LogType;
 import com.shoumh.core.common.util.ThreadPoolProvider;

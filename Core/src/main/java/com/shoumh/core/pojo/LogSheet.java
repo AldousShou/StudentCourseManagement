@@ -1,5 +1,6 @@
 package com.shoumh.core.pojo;
 
+import com.shoumh.core.common.log.LogLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class LogSheet implements Serializable {
     private String className;
     private String functionName;
     private String params;
+    private LogLevel logLevel;
     private String description;
 
     @Serial

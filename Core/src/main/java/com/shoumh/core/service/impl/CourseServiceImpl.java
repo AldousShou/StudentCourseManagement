@@ -2,8 +2,8 @@ package com.shoumh.core.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.shoumh.core.common.ChoiceStatus;
-import com.shoumh.core.common.CourseStatus;
+import com.shoumh.core.common.course.ChoiceStatus;
+import com.shoumh.core.common.course.CourseStatus;
 import com.shoumh.core.common.SystemConstant;
 import com.shoumh.core.dao.CourseDao;
 import com.shoumh.core.dao.RedisUtil;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Math.max;

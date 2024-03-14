@@ -1,4 +1,4 @@
-package com.shoumh.core.common;
+package com.shoumh.core.common.course;
 
 public enum CourseStatus {
     NORMAL,

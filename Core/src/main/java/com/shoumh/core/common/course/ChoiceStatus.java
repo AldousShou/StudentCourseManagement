@@ -1,6 +1,4 @@
-package com.shoumh.core.common;
-
-import java.util.HashMap;
+package com.shoumh.core.common.course;
 
 public enum ChoiceStatus {
     NOT_RUBBED, // 没有抢到课程

@@ -1,6 +1,6 @@
 package com.shoumh.core.pojo;
 
-import com.shoumh.core.common.ChoiceStatus;
+import com.shoumh.core.common.course.ChoiceStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

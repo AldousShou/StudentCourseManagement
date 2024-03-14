@@ -1,7 +1,7 @@
 package com.shoumh.core.dao;
 
-import com.shoumh.core.common.ChoiceStatus;
-import com.shoumh.core.common.CourseStatus;
+import com.shoumh.core.common.course.ChoiceStatus;
+import com.shoumh.core.common.course.CourseStatus;
 import com.shoumh.core.mapper.CourseMapper;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseCapacity;

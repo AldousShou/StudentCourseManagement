@@ -1,6 +1,6 @@
 package com.shoumh.core.mapper;
 
-import com.shoumh.core.common.ChoiceStatus;
+import com.shoumh.core.common.course.ChoiceStatus;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseCapacity;
 import com.shoumh.core.pojo.Student;

@@ -1,8 +1,8 @@
 package com.shoumh.core.service.impl;
 
 import com.google.gson.Gson;
-import com.shoumh.core.common.ChoiceStatus;
-import com.shoumh.core.common.CourseStatus;
+import com.shoumh.core.common.course.ChoiceStatus;
+import com.shoumh.core.common.course.CourseStatus;
 import com.shoumh.core.common.SystemConstant;
 import com.shoumh.core.dao.CourseDao;
 import com.shoumh.core.dao.RedisUtil;

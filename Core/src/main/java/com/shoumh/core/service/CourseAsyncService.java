@@ -1,6 +1,6 @@
 package com.shoumh.core.service;
 
-import com.shoumh.core.common.ChoiceStatus;
+import com.shoumh.core.common.course.ChoiceStatus;
 import com.shoumh.core.pojo.ChoiceSheetResult;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseSheet;

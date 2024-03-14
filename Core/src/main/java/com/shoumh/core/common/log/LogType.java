@@ -1,4 +1,4 @@
-package com.shoumh.core.common;
+package com.shoumh.core.common.log;
 
 public enum LogType {
     FUNCTION_NAME_ONLY,

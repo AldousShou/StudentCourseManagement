@@ -1,11 +1,10 @@
 package com.shoumh.core.service;
 
-import com.shoumh.core.common.ChoiceStatus;
-import com.shoumh.core.common.CourseStatus;
+import com.shoumh.core.common.course.ChoiceStatus;
+import com.shoumh.core.common.course.CourseStatus;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseCapacity;
 import com.shoumh.core.pojo.CourseSheet;
-import com.shoumh.core.pojo.Student;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

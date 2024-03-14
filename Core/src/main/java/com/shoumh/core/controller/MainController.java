@@ -1,8 +1,7 @@
 package com.shoumh.core.controller;
 
 import com.shoumh.core.annotation.AutoLog;
-import com.shoumh.core.common.CourseStatus;
-import com.shoumh.core.common.LogType;
+import com.shoumh.core.common.course.CourseStatus;
 import com.shoumh.core.common.SystemConstant;
 import com.shoumh.core.pojo.*;
 import com.shoumh.core.service.CourseService;

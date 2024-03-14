@@ -1,8 +1,8 @@
 package com.shoumh.core.mapper;
 
 import com.google.gson.Gson;
-import com.shoumh.core.common.ChoiceStatus;
-import com.shoumh.core.common.CourseStatus;
+import com.shoumh.core.common.course.ChoiceStatus;
+import com.shoumh.core.common.course.CourseStatus;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.Student;
 import org.junit.jupiter.api.Test;

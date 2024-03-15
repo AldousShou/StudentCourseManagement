@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -35,9 +34,9 @@ public class AutoLogAspect {
     private final ExecutorService threadPool = ThreadPoolProvider.getThreadPoolForLog();
 
     @Around("@annotation(com.shoumh.core.annotation.AutoLog)")
-    public Object methodExporter(ProceedingJoinPoint jointPoint) throws Throwable {
+    public Object methodExporter(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        MethodSignature methodSignature = (MethodSignature) jointPoint.getSignature();
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         AutoLog autoLog = method.getAnnotation(AutoLog.class);
 
@@ -45,15 +44,15 @@ public class AutoLogAspect {
 
         LocalDateTime startDateTime = LocalDateTime.now();
         StringJoiner joiner = new StringJoiner(", ");
-        String[] params = ((MethodSignature) jointPoint.getSignature()).getParameterNames();
+        String[] params = ((MethodSignature) joinPoint.getSignature()).getParameterNames();
         for (String param: params) {
             joiner.add(param);
         }
         String paramString = joiner.toString();
         LogSheet sheet = LogSheet.builder()
                 .uuid(uuid)
-                .className(jointPoint.getTarget().getClass().getName())
-                .functionName(jointPoint.getSignature().getName())
+                .className(joinPoint.getTarget().getClass().getName())
+                .functionName(joinPoint.getSignature().getName())
                 .params(paramString)
                 .logLevel(LogLevel.INFO)
                 .startDateTime(startDateTime)
@@ -89,7 +88,7 @@ public class AutoLogAspect {
         Object proceed = null;
         if (autoLog.catchErrors()) {
             try {
-                proceed = jointPoint.proceed();
+                proceed = joinPoint.proceed();
             } catch (RuntimeException e) {
                 threadPool.submit(() -> {
                     sheet.setLogLevel(LogLevel.WARNING);
@@ -114,7 +113,7 @@ public class AutoLogAspect {
                 });
             }
         } else {
-            proceed = jointPoint.proceed();
+            proceed = joinPoint.proceed();
         }
 
 

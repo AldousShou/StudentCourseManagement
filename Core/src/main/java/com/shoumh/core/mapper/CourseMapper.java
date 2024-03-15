@@ -1,6 +1,7 @@
 package com.shoumh.core.mapper;
 
 import com.shoumh.core.common.course.ChoiceStatus;
+import com.shoumh.core.common.course.CourseStatus;
 import com.shoumh.core.pojo.Course;
 import com.shoumh.core.pojo.CourseCapacity;
 import com.shoumh.core.pojo.Student;
@@ -58,6 +59,24 @@ public interface CourseMapper {
      * @return 仅返回 courseId，course 的其他内容为空
      */
     List<Course> selectPredecessor(@NotNull Course course);
+
+    /**
+     * 返回选课状态信息
+     * @return 若不存在选课状态信息，则返回 null
+     */
+    CourseStatus selectStudentCourseStatus(@NotNull String stuId, @NotNull String courseId);
+
+    /**
+     * 设置学生的选课状态，
+     * 不检查是否存在记录；
+     */
+    void setStudentCourseStatus(@NotNull String stuId, @NotNull String courseId, @NotNull CourseStatus status);
+
+    /**
+     * 更新学生选课状态，
+     * 不会检测是否存在该数据
+     */
+    void updateStudentCourseStatus(@NotNull String stuId, @NotNull String courseId, @NotNull CourseStatus status);
 
     /**
      * 学生选课核心接口，仅往数据库中添加选课记录

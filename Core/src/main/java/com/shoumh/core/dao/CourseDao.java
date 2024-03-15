@@ -73,6 +73,20 @@ public class CourseDao {
     }
 
     /**
+     * 会先检测学生的选课状态
+     * <p> 如果存在学生选课，则更新选课状态
+     * <p> 如果不存在学生选课，则创建新的选课状态
+     * 更新学生已经选择课程的状态
+     */
+    public void setOrUpdateChosenCourseStatus(@NotNull String stuId, @NotNull String courseId, @NotNull CourseStatus status) {
+        if (courseMapper.selectStudentCourseStatus(stuId, courseId) != null) {
+            courseMapper.updateStudentCourseStatus(stuId, courseId, status);
+        } else {
+            courseMapper.setStudentCourseStatus(stuId, courseId, status);
+        }
+    }
+
+    /**
      * 选课接口，不检查数据安全性；只实现往数据库中添加选课记录这一个功能
      * @param course 要求 courseId 不为空，并且只使用 courseId 这一个字段
      */

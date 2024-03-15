@@ -40,12 +40,15 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
         result.setStuId(sheet.getStuId());
         result.setUuid(sheet.getUuid());
         ArrayList<ChoiceResult> choiceResults = new ArrayList<>();
-//        Student student = StudentTemplate.studentWithId(sheet.getStuId());
         Student student = Student.builder().stuId(sheet.getStuId()).build();
 
         for (Course course: sheet.getCourses()) {
             ChoiceStatus status = checkChoiceLegality(student, course);
             assert status != null;
+            // 更新数据库状态
+            // 更新学生选课状态为 CourseStatus.PRECHOSEN
+            // 避免学生重复提交选课单而导致多选
+            courseDao.setOrUpdateChosenCourseStatus(sheet.getStuId(), course.getCourseId(), CourseStatus.PRECHOSEN);
             choiceResults.add(new ChoiceResult(course.getCourseId(), status));
         }
 
@@ -92,7 +95,8 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
         }
 
         // 查看是否已经选择该课程
-        if (courseDao.hasChosen(student, course, CourseStatus.NORMAL)) {
+        if (courseDao.hasChosen(student, course, CourseStatus.NORMAL) ||
+            courseDao.hasChosen(student, course, CourseStatus.PRECHOSEN)) {
             redisUtil.incr(courseCountkey);
             return ChoiceStatus.CHOICE_DUPLICATED;
         }
@@ -143,7 +147,6 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
         for (ChoiceResult choiceResult: sheetResult.getChoiceResults()) {
             if (choiceResult.getStatus().equals(ChoiceStatus.SUCCESS)) {
                 courseDao.choose(sheetResult.getStuId(),
-//                        CourseTemplate.courseWithCourseId(choiceResult.getCourseId())
                         Course.builder().courseId(choiceResult.getCourseId()).build()
                 );
             }

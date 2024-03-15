@@ -27,6 +27,10 @@ public class LogSheet implements Serializable {
     private String params;
     private LogLevel logLevel;
     private String description;
+    /**
+     * 编码为 json 格式
+     */
+    private String data;
 
     @Serial
     private static final long serialVersionUID = 1L;

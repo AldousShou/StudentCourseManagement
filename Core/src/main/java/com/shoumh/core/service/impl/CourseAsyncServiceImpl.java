@@ -69,7 +69,7 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
         }
 
         // 预选课
-        String courseCountkey = redisUtil.concatKeys("course", "count", course.getCourseId());
+        String courseCountkey = redisUtil.concatKeys("course", "avail", course.getCourseId());
         // 查看是否在内存中 **注意：需要先暖机**
         if (!redisUtil.hasKey(courseCountkey)) {
             CourseCapacity capacity = courseDao.getCapacity(course);
@@ -147,7 +147,7 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
         for (ChoiceResult choiceResult: sheetResult.getChoiceResults()) {
             if (choiceResult.getStatus().equals(ChoiceStatus.SUCCESS)) {
                 courseDao.choose(sheetResult.getStuId(),
-                        Course.builder().courseId(choiceResult.getCourseId()).build()
+                        choiceResult.getCourseId()
                 );
             }
         }

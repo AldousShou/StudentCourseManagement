@@ -16,8 +16,10 @@
     </resultMap>
 
     <insert id="log">
-        insert into log (uuid, start_datetime, end_datetime, duration, class_name, function_name, params, description)
-        values (#{uuid}, #{startDateTime}, #{endDateTime}, #{durationInMillis}, #{className}, #{functionName}, #{params}, #{description});
+        insert into log (uuid, start_datetime, end_datetime, duration, class_name, function_name, params, description,
+                         log_level, data)
+        values (#{uuid}, #{startDateTime}, #{endDateTime}, #{durationInMillis}, #{className}, #{functionName}, #{params}, #{description},
+               #{logLevel}, #{data});
     </insert>
 
 </mapper>

@@ -81,7 +81,7 @@ public class ThreadPoolProvider {
             log.debug("[ThreadPool] thread pool named {} does not exist", poolName);
             log.debug("[ThreadPool] creating new pool named {}", poolName);
 
-            if (type == null || type == ThreadPoolType.COMPUTE_INTENSIVE) {
+            if (type == null || type.equals(ThreadPoolType.COMPUTE_INTENSIVE)) {
                 ExecutorService threadPool = new ThreadPoolExecutor(CORE_POOL_SIZE_COMPUTE_INTENSIVE,
                         MAXIMUM_POOL_SIZE_COMPUTE_INTENSIVE,
                         2,
@@ -89,7 +89,7 @@ public class ThreadPoolProvider {
                         new LinkedBlockingDeque<>());
                 threadPoolMap.put(poolName, threadPool);
                 return threadPool;
-            } else if (type == ThreadPoolType.IO_INTENSIVE) {
+            } else if (type.equals(ThreadPoolType.IO_INTENSIVE)) {
                 ExecutorService threadPool = new ThreadPoolExecutor(CORE_POOL_SIZE_IO_INTENSIVE,
                         MAXIMUM_POOL_SIZE_IO_INTENSIVE,
                         2,

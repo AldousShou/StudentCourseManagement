@@ -176,7 +176,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseCapacity getCapacity(@NotNull String courseId) {
-        String countKey = redisUtil.concatKeys("course", "count", courseId);
+        String countKey = redisUtil.concatKeys("course", "avail", courseId);
         String capacityKey = redisUtil.concatKeys("course", "capacity", courseId);
         if (redisUtil.hasKey(countKey) && redisUtil.hasKey(capacityKey)) {
             Long capacity = Long.valueOf(redisUtil.get(capacityKey));

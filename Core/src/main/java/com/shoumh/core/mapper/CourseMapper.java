@@ -82,7 +82,7 @@ public interface CourseMapper {
      * 学生选课核心接口，仅往数据库中添加选课记录
      * **注意！不检查选课记录的合法性，仅添加记录**
      */
-    void choose(@NotNull String stuId, @NotNull Course course);
+    void choose(@NotNull String stuId, @NotNull String courseId);
 
     /**
      * 获取课程余量等数据

@@ -88,10 +88,9 @@ public class CourseDao {
 
     /**
      * 选课接口，不检查数据安全性；只实现往数据库中添加选课记录这一个功能
-     * @param course 要求 courseId 不为空，并且只使用 courseId 这一个字段
      */
-    public void choose(@NotNull String stuId, Course course) {
-        courseMapper.choose(stuId, course);
+    public void choose(@NotNull String stuId, @NotNull String courseId) {
+        courseMapper.choose(stuId, courseId);
     }
 
     /**

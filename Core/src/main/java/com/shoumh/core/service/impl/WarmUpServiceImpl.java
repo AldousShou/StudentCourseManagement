@@ -48,7 +48,7 @@ public class WarmUpServiceImpl implements WarmUpService {
             redisUtil.setWithExpiration(pageKey, gson.toJson(courses), 2, TimeUnit.DAYS);
             for (Course course: courses) {
                 String courseId = course.getCourseId();
-                String countKey = redisUtil.concatKeys("course", "count", courseId);
+                String countKey = redisUtil.concatKeys("course", "avail", courseId);
                 String capacityKey = redisUtil.concatKeys("course", "capacity", courseId);
 
                 CourseCapacity capacity = courseDao.getCapacity(course);
@@ -56,7 +56,7 @@ public class WarmUpServiceImpl implements WarmUpService {
                     log.warn("error get capacity with course {}, capacity {}", course, capacity);
                 } else {
                     redisUtil.setWithExpiration(capacityKey, String.valueOf(capacity.getCapacity()), 2, TimeUnit.DAYS);
-                    redisUtil.setWithExpiration(countKey, String.valueOf(capacity.getSelection()), 2, TimeUnit.DAYS);
+                    redisUtil.setWithExpiration(countKey, String.valueOf(capacity.getCapacity() - capacity.getSelection()), 2, TimeUnit.DAYS);
                 }
             }
             i++;

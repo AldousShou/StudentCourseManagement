@@ -126,14 +126,14 @@ public class AutoLogAspect {
             sheet.setDurationInMillis(duration.toMillis());
             sheet.setLogLevel(LogLevel.INFO);
             if (autoLog.writeToConsole()) {
-                if (autoLog.logType() == LogType.FUNCTION_NAME_ONLY) {
+                if (autoLog.logType().equals(LogType.FUNCTION_NAME_ONLY)) {
                     log.debug("[AutoLog] target:{}.{}, start at: {}, end at: {}, interval: {} ms",
                             sheet.getClassName(),
                             sheet.getFunctionName(),
                             sheet.getStartDateTime(),
                             sheet.getEndDateTime(),
                             duration.toMillis());
-                } else if (autoLog.logType() == LogType.FUNCTION_NAME_AND_PARAMS) {
+                } else if (autoLog.logType().equals(LogType.FUNCTION_NAME_AND_PARAMS)) {
                     log.debug("[AutoLog] target:{}.{}, params: {}, start at: {}, interval: {} ms",
                             sheet.getClassName(),
                             sheet.getFunctionName(),

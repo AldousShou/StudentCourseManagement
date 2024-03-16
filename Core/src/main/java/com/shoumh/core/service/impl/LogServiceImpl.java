@@ -5,6 +5,7 @@ import com.shoumh.core.pojo.LogSheet;
 import com.shoumh.core.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LogServiceImpl implements LogService {

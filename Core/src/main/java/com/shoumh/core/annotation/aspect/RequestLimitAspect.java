@@ -25,10 +25,10 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Aspect
-@Component
+//@Component
+@Deprecated
 public class RequestLimitAspect {
 
-    @Autowired
     private Gson gson;
     private final Map<String, RateLimiter> limitMap = Maps.newConcurrentMap();
 

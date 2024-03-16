@@ -100,6 +100,7 @@ public class AutoLogAspect {
                         rabbitTemplate.convertAndSend(autoLog.exchangeName(), "", sheet);
                     }
                 });
+                throw e;
             } catch (Exception e) {
                 threadPool.submit(() -> {
                     sheet.setLogLevel(LogLevel.ERROR);
@@ -111,6 +112,7 @@ public class AutoLogAspect {
                         rabbitTemplate.convertAndSend(autoLog.exchangeName(), "", sheet);
                     }
                 });
+                throw e;
             }
         } else {
             proceed = joinPoint.proceed();

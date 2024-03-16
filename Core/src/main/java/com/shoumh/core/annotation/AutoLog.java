@@ -10,9 +10,6 @@ import java.lang.annotation.*;
 public @interface AutoLog {
     boolean writeToConsole() default true;
     boolean writeToMQ() default false;
-    /**
-     * 如果正在调试，请不要设置这个为 true，会捕获异常
-     */
     boolean catchErrors() default false;
     String exchangeName() default "";
     LogType logType() default LogType.FUNCTION_NAME_ONLY;

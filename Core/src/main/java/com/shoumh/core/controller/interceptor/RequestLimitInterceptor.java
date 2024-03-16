@@ -60,7 +60,8 @@ public class RequestLimitInterceptor implements HandlerInterceptor {
                 if (acquired) {
                     return true;
                 } else {
-                    response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+//                    response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+                    response.setStatus(HttpStatus.OK.value());
                     response.setContentType("application/json");
                     response.getWriter().write(
                             gson.toJson(

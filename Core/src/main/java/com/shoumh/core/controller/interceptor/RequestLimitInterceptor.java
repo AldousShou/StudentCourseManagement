@@ -2,10 +2,14 @@ package com.shoumh.core.controller.interceptor;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.RateLimiter;
+import com.google.gson.Gson;
 import com.shoumh.core.annotation.RequestLimit;
+import com.shoumh.core.pojo.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,6 +20,9 @@ import java.util.Map;
 @Slf4j
 @Component
 public class RequestLimitInterceptor implements HandlerInterceptor {
+
+    @Autowired
+    private Gson gson;
 
     private final Map<String, RateLimiter> limitMap = Maps.newConcurrentMap();
 
@@ -53,6 +60,13 @@ public class RequestLimitInterceptor implements HandlerInterceptor {
                 if (acquired) {
                     return true;
                 } else {
+                    response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+                    response.setContentType("application/json");
+                    response.getWriter().write(
+                            gson.toJson(
+                                    new Result(1, "too many requests", null)
+                            )
+                    );
                     log.debug("[RequestLimitInterceptor] failed to get token from token bucker {}", limitKey);
                     log.debug("[RequestLimitInterceptor] limit request");
                     return false;

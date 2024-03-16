@@ -1,6 +1,7 @@
 package com.shoumh.core.common.util;
 
 import ch.qos.logback.core.pattern.FormatInfo;
+import com.google.common.collect.Maps;
 import com.shoumh.core.common.ThreadPoolType;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.*;
 
 @Slf4j
@@ -36,7 +38,7 @@ public class ThreadPoolProvider {
      */
     private static ExecutorService threadPoolForLog;
 
-    private static HashMap<String, ExecutorService> threadPoolMap;
+    private static final Map<String, ExecutorService> threadPoolMap = Maps.newConcurrentMap();
 
     private ThreadPoolProvider() {}
 

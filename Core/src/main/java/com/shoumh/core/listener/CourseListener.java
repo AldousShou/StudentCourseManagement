@@ -1,6 +1,7 @@
 package com.shoumh.core.listener;
 
 import com.shoumh.core.common.SystemConstant;
+import com.shoumh.core.common.util.ThreadPoolProvider;
 import com.shoumh.core.pojo.ChoiceSheetResult;
 import com.shoumh.core.pojo.CourseSheet;
 import com.shoumh.core.service.CourseAsyncService;
@@ -10,6 +11,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ExecutorService;
+
 @Slf4j
 @Component
 public class CourseListener {
@@ -18,6 +21,9 @@ public class CourseListener {
     private CourseService courseService;
     @Autowired
     private CourseAsyncService courseAsyncService;
+
+    private final ExecutorService poolForLog = ThreadPoolProvider.getThreadPoolForLog();
+    private final ExecutorService poolForDB = ThreadPoolProvider.getThreadPoolForIO();
 
     /**
      * 用于处理 before_check 队列中的表单录入 log 数据库的处理
@@ -44,8 +50,10 @@ public class CourseListener {
      */
     @RabbitListener(queues = SystemConstant.CHOICE_CHECKED_QUEUE_DB)
     public void listenChoiceCheckedQueueDB(ChoiceSheetResult sheet) {
-        log.debug("[queue '{}'] writing into db sheet '{}'", SystemConstant.CHOICE_CHECKED_QUEUE_DB, sheet.getUuid());
-        courseAsyncService.writeChoiceSheet(sheet);
+        poolForDB.submit(() -> {
+            log.debug("[queue '{}'] writing into db sheet '{}'", SystemConstant.CHOICE_CHECKED_QUEUE_DB, sheet.getUuid());
+            courseAsyncService.writeChoiceSheet(sheet);
+        });
     }
 
     /**
@@ -53,8 +61,10 @@ public class CourseListener {
      */
     @RabbitListener(queues = SystemConstant.CHOICE_CHECKED_QUEUE_LOG)
     public void listenChoiceCheckedQueueLog(ChoiceSheetResult sheet) {
-        log.debug("[queue '{}'] updating status sheet '{}'", SystemConstant.CHOICE_CHECKED_QUEUE_LOG, sheet.getUuid());
-        courseAsyncService.updateSheetStatus(sheet);
+        poolForLog.submit(() -> {
+            log.debug("[queue '{}'] updating status sheet '{}'", SystemConstant.CHOICE_CHECKED_QUEUE_LOG, sheet.getUuid());
+            courseAsyncService.updateSheetStatus(sheet);
+        });
     }
 
 }

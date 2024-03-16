@@ -2,6 +2,7 @@ package com.shoumh.core.controller;
 
 import com.shoumh.core.annotation.AutoLog;
 import com.shoumh.core.annotation.RequestLimit;
+import com.shoumh.core.annotation.ServletTimer;
 import com.shoumh.core.common.course.CourseStatus;
 import com.shoumh.core.common.SystemConstant;
 import com.shoumh.core.pojo.*;
@@ -32,22 +33,24 @@ public class MainController {
     private WarmUpService warmUpService;
 
     @RequestLimit(permitsPerSecond = 1)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/warm_up")
     public Result warmUp() {
         warmUpService.warmUp();
         return Result.success();
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/ping")
     public Result ping() {
         return Result.success("PONG");
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_stu_info")
     public Result getStuInfo(String stuId) {
         if (stuId == null) return new Result(1, "params not fulfilled");
@@ -55,24 +58,27 @@ public class MainController {
         return Result.success(student);
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/exist_user")
     public Result existUser(String stuId) {
         Boolean exist = studentService.existUser(stuId);
         return Result.success(exist);
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_public")
     public Result getCurrentPublic(@Param("start") Integer start, @Param("pagesize") Integer pagesize) {
         List<Course> courses = courseService.getCurrentPublic(start, pagesize);
         return Result.success(courses);
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_public_chosen")
     public Result getPublicChosen(@Param("stuId") String stuId, @Param("status") String status,
                                   @Param("start") Integer start, @Param("pagesize") Integer pagesize) {
@@ -92,8 +98,9 @@ public class MainController {
         return Result.success(courses);
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_public_unchosen")
     public Result getPublicUnchosen(String stuId, Integer start, Integer pagesize) {
         if (stuId == null) return new Result(2, "params unfulfilled");
@@ -101,15 +108,17 @@ public class MainController {
         return Result.success(courses);
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_major")
     public Result getMajor(Integer major, Integer start, Integer pagesize) {
         return Result.success(courseService.getCurrentMajor(major, start, pagesize));
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_major_chosen")
     public Result getMajorChosen(String stuId, String status, Integer start, Integer pagesize) {
         List<Course> courses;
@@ -125,23 +134,26 @@ public class MainController {
         return Result.success(courses);
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_major_unchosen")
     public Result getMajorUnchosen(String stuId, Integer start, Integer pagesize) {
         return Result.success(courseService.getCurrentMajorUnchosenByStudent(stuId, start, pagesize));
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_capacity")
     public Result getCapacity(String courseId) {
         if (courseId == null) return new Result(1, "params not fulfilled");
         return Result.success(courseService.getCapacity(courseId));
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @PostMapping("/choose_course")
     public Result chooseCourse(@RequestBody @NotNull CourseSheet sheet) {
         if (sheet.getStuId() == null || sheet.getCourses() == null) {
@@ -152,8 +164,9 @@ public class MainController {
         }
     }
 
+    @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_sheet_status")
     public Result getSheetStatus(@RequestParam("uuid") String uuid) {
         return Result.success(courseService.getSheetStatus(uuid));

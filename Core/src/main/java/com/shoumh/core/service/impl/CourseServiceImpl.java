@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.shoumh.core.common.course.ChoiceStatus;
 import com.shoumh.core.common.course.CourseStatus;
 import com.shoumh.core.common.SystemConstant;
+import com.shoumh.core.common.util.ThreadPoolProvider;
 import com.shoumh.core.dao.CourseDao;
 import com.shoumh.core.dao.RedisUtil;
 import com.shoumh.core.pojo.Course;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Math.max;
@@ -41,9 +43,9 @@ public class CourseServiceImpl implements CourseService {
     private static final Integer YEAR = SystemConstant.YEAR;
     private static final Integer SEMESTER = SystemConstant.SEMESTER;
 
-    private final ReentrantLock cacheReadyLock = new ReentrantLock();
     private final ReentrantLock pubCourseReadyLock = new ReentrantLock();
-    private final String cacheReadyKey = "course:cached";
+
+    private final ExecutorService threadPool = ThreadPoolProvider.getThreadPoolForLog();
 
     private final Gson gson = new Gson();
     private final Type LIST_COURSE = new TypeToken<List<Course>>(){}.getType();
@@ -195,7 +197,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public String chooseCourse(CourseSheet sheet) {
-        String uuid = String.valueOf(UUID.randomUUID());
+        String uuid = UUID.randomUUID().toString();
         sheet.setUuid(uuid);
 
         try {
@@ -203,9 +205,9 @@ public class CourseServiceImpl implements CourseService {
         } catch (AmqpException exception) {
             log.info("unable to send to rabbitmq, record uuid: {}", sheet.getUuid());
 
-            new Thread(()->{
+            threadPool.submit(()->{
                 log.info("new thread to handle rabbitmq send err not implemented");
-            }).start();
+            });
         }
 
         return uuid;

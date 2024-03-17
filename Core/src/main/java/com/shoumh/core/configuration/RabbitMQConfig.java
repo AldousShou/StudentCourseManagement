@@ -15,6 +15,8 @@ public class RabbitMQConfig {
 
     private static final Jackson2JsonMessageConverter jackson2JsonMessageConverter = new Jackson2JsonMessageConverter();
     private static final SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    private static final Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
+
 
     @Bean
     public MessageConverter messageConverter(){
@@ -24,7 +26,7 @@ public class RabbitMQConfig {
     @Bean
     public RabbitListenerContainerFactory<?> rabbitListenerContainerFactory(ConnectionFactory connectionFactory){
         factory.setConnectionFactory(connectionFactory);
-        factory.setMessageConverter(new Jackson2JsonMessageConverter());
+        factory.setMessageConverter(converter);
         return factory;
     }
 

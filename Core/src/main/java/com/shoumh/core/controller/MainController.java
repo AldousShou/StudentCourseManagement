@@ -13,6 +13,7 @@ import com.shoumh.core.service.WarmUpService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 @Slf4j
-public class MainController {
+public class MainController implements InitializingBean {
 
     @Autowired
     private StudentService studentService;
@@ -31,14 +32,6 @@ public class MainController {
     private CourseService courseService;
     @Autowired
     private WarmUpService warmUpService;
-
-    @RequestLimit(permitsPerSecond = 1)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
-    @GetMapping("/warm_up")
-    public Result warmUp() {
-        warmUpService.warmUp();
-        return Result.success();
-    }
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
@@ -170,5 +163,14 @@ public class MainController {
     @GetMapping("/get_sheet_status")
     public Result getSheetStatus(@RequestParam("uuid") String uuid) {
         return Result.success(courseService.getSheetStatus(uuid));
+    }
+
+    /**
+     * 使用 Spring 提供的 InitializingBean 接口实现暖机
+     * @throws Exception
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        warmUpService.warmUp();
     }
 }

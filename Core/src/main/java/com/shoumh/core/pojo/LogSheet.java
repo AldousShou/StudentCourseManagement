@@ -26,6 +26,7 @@ public class LogSheet implements Serializable {
     private String functionName;
     private String params;
     private LogLevel logLevel;
+    private String source;
     private String description;
     /**
      * 编码为 json 格式

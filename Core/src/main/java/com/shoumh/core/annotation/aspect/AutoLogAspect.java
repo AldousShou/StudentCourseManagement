@@ -14,6 +14,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -40,7 +43,17 @@ public class AutoLogAspect {
         Method method = methodSignature.getMethod();
         AutoLog autoLog = method.getAnnotation(AutoLog.class);
 
-        String uuid = UUID.randomUUID().toString();
+        String uuid = null;
+        // 从 request 中获得 uuid
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes instanceof ServletRequestAttributes) {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) requestAttributes;
+            Object object = attributes.getRequest().getAttribute("servlet-uuid");
+            if (object != null) {
+                uuid = object.toString();
+            }
+        }
+        uuid = uuid == null ? UUID.randomUUID().toString(): uuid;
 
         LocalDateTime startDateTime = LocalDateTime.now();
         StringJoiner joiner = new StringJoiner(", ");
@@ -55,8 +68,9 @@ public class AutoLogAspect {
                 .functionName(joinPoint.getSignature().getName())
                 .params(paramString)
                 .logLevel(LogLevel.INFO)
+                .source("AutoLog")
                 .startDateTime(startDateTime)
-                .description(autoLog.description())
+                .description(autoLog.description().isEmpty()? null: autoLog.description())
                 .build();
 
         String target;

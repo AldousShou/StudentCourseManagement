@@ -63,5 +63,6 @@ public class WarmUpServiceImpl implements WarmUpService {
         } while (! courses.isEmpty());
 
         redisUtil.setWithExpiration(redisWarmUpKey, "OK", 2, TimeUnit.DAYS);
+        log.info("warm up finished");
     }
 }

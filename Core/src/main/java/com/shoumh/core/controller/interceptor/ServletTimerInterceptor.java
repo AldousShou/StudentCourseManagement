@@ -52,7 +52,7 @@ public class ServletTimerInterceptor implements HandlerInterceptor {
                                             .className(handlerMethod.getMethod().getDeclaringClass().getName())
                                             .functionName(handlerMethod.getMethod().getName())
                                             .logLevel(LogLevel.INFO)
-                                            .description("[ServletTimer]")
+                                            .source("ServletTimer")
                                             .params(Arrays.toString(handlerMethod.getMethod().getParameters()))
                                             .build();
 

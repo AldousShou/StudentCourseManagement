@@ -16,10 +16,6 @@ import java.util.List;
 @Mapper
 public interface StudentCourseAllMapper {
 
-    StudentCourseAll selectById(@NotNull Integer id);
-
     List<StudentCourseAll> select(Student student, Integer year, Integer semester);
-
-    void deleteById(@NotNull String id);
 
 }

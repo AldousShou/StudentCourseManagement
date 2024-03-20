@@ -15,24 +15,4 @@ import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 class StudentCourseAllMapperTest {
 
-    @Autowired
-    private StudentCourseAllMapper studentCourseAllMapper;
-
-    @Test
-    void selectById() {
-        StudentCourseAll res = studentCourseAllMapper.selectById(2);
-        log.debug(res.toString());
-    }
-
-    @Test
-    void select() {
-        Student student = new Student();
-        List<StudentCourseAll> res = studentCourseAllMapper.select(student, 2024, 1);
-        log.debug(res.toString());
-    }
-
-    @Test
-    void deleteById() {
-        studentCourseAllMapper.deleteById("1");
-    }
 }

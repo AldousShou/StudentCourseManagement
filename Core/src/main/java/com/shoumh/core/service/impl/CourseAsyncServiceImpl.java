@@ -43,6 +43,11 @@ public class CourseAsyncServiceImpl implements CourseAsyncService {
         Student student = Student.builder().stuId(sheet.getStuId()).build();
 
         for (Course course: sheet.getCourses()) {
+            if (course == null) {
+                log.warn("{}", choiceResults);
+                log.warn("checkAndSendChoiceSheetLegality: invalid course: course cannot be null");
+                continue;
+            }
             ChoiceStatus status = checkChoiceLegality(student, course);
             assert status != null;
             // 更新数据库状态

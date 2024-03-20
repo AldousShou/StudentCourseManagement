@@ -25,6 +25,13 @@ public class CourseListener {
     private final ExecutorService poolForLog = ThreadPoolProvider.getThreadPoolForLog();
     private final ExecutorService poolForDB = ThreadPoolProvider.getThreadPoolForIO();
 
+
+    /*
+     *
+     * before check
+     *
+     */
+
     /**
      * 用于处理 before_check 队列中的表单录入 log 数据库的处理
      */
@@ -45,15 +52,21 @@ public class CourseListener {
         courseAsyncService.checkAndSendChoiceSheetLegality(sheet);
     }
 
+
+    /*
+     *
+     * after check
+     *
+     */
+
+
     /**
      * 用于处理 checked 队列中的表单的持久化处理，
      */
     @RabbitListener(queues = SystemConstant.CHOICE_CHECKED_QUEUE_DB)
     public void listenChoiceCheckedQueueDB(ChoiceSheetResult sheet) {
-        poolForDB.submit(() -> {
-            log.debug("[queue '{}'] writing into db sheet '{}'", SystemConstant.CHOICE_CHECKED_QUEUE_DB, sheet.getUuid());
-            courseAsyncService.writeChoiceSheet(sheet);
-        });
+        log.debug("[queue '{}'] writing into db sheet '{}'", SystemConstant.CHOICE_CHECKED_QUEUE_DB, sheet.getUuid());
+        courseAsyncService.writeChoiceSheet(sheet);
     }
 
     /**
@@ -61,10 +74,8 @@ public class CourseListener {
      */
     @RabbitListener(queues = SystemConstant.CHOICE_CHECKED_QUEUE_LOG)
     public void listenChoiceCheckedQueueLog(ChoiceSheetResult sheet) {
-        poolForLog.submit(() -> {
-            log.debug("[queue '{}'] updating status sheet '{}'", SystemConstant.CHOICE_CHECKED_QUEUE_LOG, sheet.getUuid());
-            courseAsyncService.updateSheetStatus(sheet);
-        });
+        log.debug("[queue '{}'] updating status sheet '{}'", SystemConstant.CHOICE_CHECKED_QUEUE_LOG, sheet.getUuid());
+        courseAsyncService.updateSheetStatus(sheet);
     }
 
 }

@@ -20,18 +20,11 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        record_id, stu_id,course_id,select_dt,
+        stu_id,course_id,select_dt,
         stu_name,course_name,teacher_id,
         credit,location,has_predecessor,
         has_major_demand,year,semester
     </sql>
-
-    <select id="selectById" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from student_course_all_view
-        where record_id = #{id}
-    </select>
 
     <select id="select" resultMap="BaseResultMap">
         select
@@ -53,10 +46,5 @@
             </if>
         </where>
     </select>
-
-    <delete id="deleteById">
-        delete from student_course
-        where id = #{id}
-    </delete>
 
 </mapper>

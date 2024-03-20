@@ -35,7 +35,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/ping")
     public Result ping() {
         return Result.success("PONG");
@@ -43,7 +43,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_stu_info")
     public Result getStuInfo(String stuId) {
         if (stuId == null) return new Result(1, "params not fulfilled");
@@ -53,7 +53,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/exist_user")
     public Result existUser(String stuId) {
         Boolean exist = studentService.existUser(stuId);
@@ -62,7 +62,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_public")
     public Result getCurrentPublic(@Param("start") Integer start, @Param("pagesize") Integer pagesize) {
         List<Course> courses = courseService.getCurrentPublic(start, pagesize);
@@ -71,7 +71,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_public_chosen")
     public Result getPublicChosen(@Param("stuId") String stuId, @Param("status") String status,
                                   @Param("start") Integer start, @Param("pagesize") Integer pagesize) {
@@ -93,7 +93,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_public_unchosen")
     public Result getPublicUnchosen(String stuId, Integer start, Integer pagesize) {
         if (stuId == null) return new Result(2, "params unfulfilled");
@@ -103,7 +103,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_major")
     public Result getMajor(Integer major, Integer start, Integer pagesize) {
         return Result.success(courseService.getCurrentMajor(major, start, pagesize));
@@ -111,7 +111,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_major_chosen")
     public Result getMajorChosen(String stuId, String status, Integer start, Integer pagesize) {
         List<Course> courses;
@@ -129,7 +129,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_major_unchosen")
     public Result getMajorUnchosen(String stuId, Integer start, Integer pagesize) {
         return Result.success(courseService.getCurrentMajorUnchosenByStudent(stuId, start, pagesize));
@@ -137,7 +137,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_capacity")
     public Result getCapacity(String courseId) {
         if (courseId == null) return new Result(1, "params not fulfilled");
@@ -146,7 +146,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @PostMapping("/choose_course")
     public Result chooseCourse(@RequestBody @NotNull CourseSheet sheet) {
         if (sheet.getStuId() == null || sheet.getCourses() == null) {
@@ -159,7 +159,7 @@ public class MainController implements InitializingBean {
 
     @ServletTimer
     @RequestLimit(permitsPerSecond = 1000)
-//    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
+    @AutoLog(writeToMQ = true, exchangeName = SystemConstant.LOG_EXCHANGE)
     @GetMapping("/get_sheet_status")
     public Result getSheetStatus(@RequestParam("uuid") String uuid) {
         return Result.success(courseService.getSheetStatus(uuid));
